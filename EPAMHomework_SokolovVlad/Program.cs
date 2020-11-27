@@ -6,7 +6,8 @@ namespace EPAMHomework_SokolovVlad
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Game game = new Game(10, 10, 10);
+            game.CreateMenu();
         }
     }
 }
