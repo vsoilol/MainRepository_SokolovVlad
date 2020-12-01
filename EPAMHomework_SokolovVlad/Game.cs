@@ -1,62 +1,83 @@
 ﻿using System;
 using System.Threading;
 
-namespace EPAMHomework_SokolovVlad
+namespace PrincessGame
 {
-    class Game
+    public class Game
     {
-        const char _border = '#';//Как будут выглядить границы
-        const char _viewPrincess = '*';//Как будет выглядить принцесса
-        private Сoordinate _princess;//Координаты принцессы
-        private Player _player;//Игрок
-        private int _borderX;
-        private int _borderY;
-        private bool IsTrapsShow;
-        private bool _inGame = true;
-        private Trap[] _traps;
-        Timer _time;
-        DateTime _passageTime;
-        private int _numberTraps = 0;
-        public Game(int sizeX, int sizeY, int numberTraps)
+        private const char viewBorder = '#';//Как будут выглядить границы
+        private const char viewPrincess = '*';//Как будет выглядить принцесса
+
+        private const int timeWait = 500;
+
+        private const int inscriptionDamagePositionX = 0;
+        private int inscriptionDamagePositionY;
+
+        private const int inscriptionHPMenuPositionX = 0;
+        private int inscriptionHPMenuPositionY;
+
+        private int numberTraps = 0;
+
+        private Point princess;//Координаты принцессы
+        private Player player;//Игрок
+
+        private int borderSizeX;
+        private int borderSizeY;
+
+        private bool areTrapsShow;
+        private bool inGame = true;
+
+        private Trap[] traps;
+
+        private Timer timerSecond;
+        private DateTime passageTime;
+        public Game(int fieldSizeX, int fieldSizeY, int numberTraps)
         {
             Console.CursorVisible = false;
-            _borderX = sizeX+2;
-            _borderY = sizeY+2;
-            _princess.x = 1;
-            _princess.y = sizeY;
-            _numberTraps = numberTraps;
+
+            borderSizeX = fieldSizeX + 2;
+            borderSizeY = fieldSizeY + 2;
+
+            princess.X = fieldSizeX;
+            princess.Y = fieldSizeY;
+
+            this.numberTraps = numberTraps;
+
+            inscriptionDamagePositionY = borderSizeY + 2;
+            inscriptionHPMenuPositionY = borderSizeY;
         }
         public void AddTime(object state)
         {
-            Console.SetCursorPosition(0, _borderY + 1);
+            Console.SetCursorPosition(0, borderSizeY + 1);
             Console.ResetColor();
-            _passageTime = _passageTime.AddSeconds(1);
-            Console.Write($"Прошло {_passageTime.ToLongTimeString()}");
+            passageTime = passageTime.AddSeconds(1);
+            Console.Write($"Прошло {passageTime.ToLongTimeString()}");
         }
-        public void Play()//играть
+        public void PlayGame()//играть
         {
-            _passageTime = new DateTime();
+            passageTime = new DateTime();
             TimerCallback timeCB = new TimerCallback(AddTime);
-            _time = new Timer(timeCB, null, 0, 1000);
-            while (_inGame)
+            timerSecond = new Timer(timeCB, null, 0, 1000);
+
+            while (inGame)
             {
                 if (Console.KeyAvailable)
                 {
                     switch (Console.ReadKey(true).Key)
                     {
-                        case ConsoleKey.D:
+                        case (ConsoleKey)Button.Right:
                             MovePlayer(Move.Right);
                             break;
-                        case ConsoleKey.A:
+                        case (ConsoleKey)Button.Left:
                             MovePlayer(Move.Left);
                             break;
-                        case ConsoleKey.S:
+                        case (ConsoleKey)Button.Down:
                             MovePlayer(Move.Down);
                             break;
-                        case ConsoleKey.W:
+                        case (ConsoleKey)Button.Up:
                             MovePlayer(Move.Up);
                             break;
-                        case ConsoleKey.J:
+                        case (ConsoleKey)Button.VisibilityTraps:
                             ShowTraps();
                             break;
                     }
@@ -65,46 +86,60 @@ namespace EPAMHomework_SokolovVlad
         }
         public void CreateTraps()//Создать ловушки
         {
-            IsTrapsShow = false;
-            _traps = new Trap[_numberTraps];
-            for (int i = 0; i < _numberTraps; i++)
-                _traps[i] = new Trap(_player.Health, _borderY, _borderX, _player.GetPositionX(), _player.GetPositionY(), _princess.x, _princess.y);
+            areTrapsShow = false;
+            traps = new Trap[numberTraps];
+
+            for (int i = 0; i < numberTraps; i++)
+            {
+                traps[i] = new Trap(player.Health, borderSizeY, borderSizeX, player.GetPositionX(), player.GetPositionY(), princess.X, princess.Y);
+            }
         }
         public void ShowTraps()//Показать или скрыть ловушки
         {
-            if (IsTrapsShow)
+            if (areTrapsShow)
             {
-                for (int i = 0; i < _traps.Length; i++)
-                    _traps[i].HideTrap();
-                IsTrapsShow = false;
+                for (int i = 0; i < traps.Length; i++)
+                {
+                    traps[i].HideTrap();
+                }
+                areTrapsShow = false;
             }
             else
             {
-                for (int i = 0; i < _traps.Length; i++)
-                    _traps[i].ViewTrap();
-                IsTrapsShow = true;
+                for (int i = 0; i < traps.Length; i++)
+                {
+                    traps[i].ViewTrap();
+                }
+                areTrapsShow = true;
             }
         }
         public void CreateHPMenu()//Счетчик HP
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.SetCursorPosition(0, _borderY);
+            Console.SetCursorPosition(inscriptionHPMenuPositionX, inscriptionHPMenuPositionY);
+
             Console.Write(new String(' ', Console.BufferWidth));
-            Console.SetCursorPosition(0, _borderY);
-            Console.WriteLine($"HP: {_player.Health}");
+
+            Console.SetCursorPosition(inscriptionHPMenuPositionX, inscriptionHPMenuPositionY);
+            Console.WriteLine($"HP: {player.Health}");
             Console.ResetColor();
         }
         public void CreateField()//Создать рамку
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            for (int i = 1; i <= _borderY; i++)
+
+            for (int i = 1; i <= borderSizeY; i++)
             {
-                for (int j = 1; j <= _borderX; j++)
+                for (int j = 1; j <= borderSizeX; j++)
                 {
-                    if (i != 1 && i != _borderY && j != 1 && j != _borderX)
+                    if (i != 1 && i != borderSizeY && j != 1 && j != borderSizeX)
+                    {
                         Console.Write(' ');
+                    }
                     else
-                        Console.Write(_border);
+                    {
+                        Console.Write(viewBorder);
+                    }
                 }
                 Console.WriteLine();
             }
@@ -112,52 +147,52 @@ namespace EPAMHomework_SokolovVlad
         }
         public void CreatePlayer()//Создать игрока
         {
-            _player = new Player(_borderX, _borderY);
-            _player.DrawPlayer();
+            player = new Player(borderSizeX, borderSizeY);
+            player.DrawPlayer();
         }
         public void CreatePrincess()//Создать принцессу
         {
             Console.ForegroundColor = ConsoleColor.Magenta;
-            _princess.Draw(_viewPrincess);
+            princess.DrawPoint(viewPrincess);
             Console.ResetColor();
         }
         public void MovePlayer(Move move)//Передвинуть игрока
         {
-            _player.WhereToGo = move;
-            _player.Move();
+            player.WhereToGo = move;
+            player.MovePlayer();
+
             FoundPrincess();
             EncounteredTrap();
         }
         public void EncounteredTrap()//Встречаются Ловушки
         {
-            foreach (Trap trap in _traps)
+            foreach (Trap trap in traps)
             {
-                if (trap.IsTrap(_player.GetPositionX(), _player.GetPositionY()))
+                if (trap.FallTrap(player.GetPositionX(), player.GetPositionY()))
                 {
-                    if (_player.TakeAwayHealth(trap.Damage))
+                    if (player.DepriveHealth(trap.Damage))
                     {
-                        Console.Clear();
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Game Over");
-                        Console.ResetColor();
+                        ConsoleOutput.LoseGame();
                         ResetGame();
                     }
                     else
                     {
                         CreateHPMenu();
-                        CauseDamage(trap.Damage);
+                        ShowCausedDamage(trap.Damage);
                     }
                     break;
                 }
             }
         }
-        public void CauseDamage(int damage)//Показывает какой урон получил
+        public void ShowCausedDamage(int damage)//Показывает какой урон получил
         {
-            Console.SetCursorPosition(0, _borderY+2);
+            Console.SetCursorPosition(inscriptionDamagePositionX, inscriptionDamagePositionY);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write($"Вы получили урон {damage}");
-            Thread.Sleep(500);
-            Console.SetCursorPosition(0, _borderY + 2);
+
+            Thread.Sleep(timeWait);
+
+            Console.SetCursorPosition(inscriptionDamagePositionX, inscriptionDamagePositionY);
             Console.Write(new String(' ', Console.BufferWidth));
             Console.ResetColor();
 
@@ -169,77 +204,72 @@ namespace EPAMHomework_SokolovVlad
             CreatePrincess();
             CreateHPMenu();
             CreateTraps();
-            Play();
+            PlayGame();
         }
-        public void CreateMenu()
+        public void RunMenu()
         {
-            Console.Clear();
-            Console.CursorVisible = false;
-            Console.WriteLine("1 - Начать игру");
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("2 - Таблица рекордов");
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("3 - Выйти");
-            Console.ResetColor();
+            ConsoleOutput.CreateMenu();
+
             switch (Console.ReadKey().Key)
             {
-                case ConsoleKey.D1:
+                case (ConsoleKey)Button.StartGame:
                     Console.Clear();
                     StartNewGame();//Начать игру
                     break;
-                case ConsoleKey.D2:
+                case (ConsoleKey)Button.Records:
                     Console.Clear();
-                    HallOfFame.Show();//Показать рекорды
+                    HallOfFame.ShowHallOfFame();//Показать рекорды
                     Console.ReadKey();
-                    CreateMenu();
+                    RunMenu();
                     break;
-                case ConsoleKey.D3:
+                case (ConsoleKey)Button.Exit:
                     Console.Clear();
-                    _inGame = false;
+                    inGame = false;
                     return;
                 default:
                     Console.Clear();
-                    CreateMenu();
+                    RunMenu();
                     break;
             }
         }
         public void ResetGame()
         {
-            _time.Dispose();
+            timerSecond.Dispose();
             Console.Write("Нажмите SPACE чтобы войти в меню: ");
             ConsoleKey consoleKey;
+
             do
             {
                 consoleKey = Console.ReadKey(true).Key;
-                if (consoleKey == ConsoleKey.Spacebar)
-                    CreateMenu();
+                if (consoleKey == (ConsoleKey)Button.ResetGame)
+                {
+                    RunMenu();
+                }
             }
-            while (consoleKey != ConsoleKey.Spacebar);     
+            while (consoleKey != (ConsoleKey)Button.ResetGame);
         }
         public void WriteRecord()
         {
-            _time.Dispose();
-            Console.WriteLine("Запись рекорда");
-            Console.Write("Введите своё имя: ");
-            string name = Console.ReadLine();
+            timerSecond.Dispose();
+            string namePlayer = ConsoleOutput.EnterRecord();
+
             HallOfFameEntry entry = new HallOfFameEntry();
-            if (name.Contains(' '))
+
+            if (namePlayer.Contains(' '))
             {
-                string[] res = name.Trim().Split();
-                name = res[0];
+                string[] res = namePlayer.Trim().Split();
+                namePlayer = res[0];
             }
-            entry.Name = name;
-            entry.Score = _passageTime;
+            entry.Name = namePlayer;
+            entry.PassageTime = passageTime;
+
             HallOfFame.AddResult(entry);
         }
         public void FoundPrincess()
         {
-            if (_player.IsPrincessFound(_princess))
+            if (player.FoundPrincess(princess))
             {
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Вы дошли до принцессы");
-                Console.ResetColor();
+                ConsoleOutput.WinGame();
                 WriteRecord();
                 ResetGame();
             }

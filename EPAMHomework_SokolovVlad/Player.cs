@@ -1,86 +1,106 @@
 ﻿using System;
 
-namespace EPAMHomework_SokolovVlad
+namespace PrincessGame
 {
-    class Player
+    public class Player
     {
-        private char _viewPlayer = '@';
-        private Сoordinate _position;
-        private Сoordinate _oldPosition;
-        private int _borderPlayerX;
-        private int _borderPlayerY;
+        private const char viewPlayer = '@';
+        private const int startPositionX = 1;
+        private const int startPositionY = 1;
+        private const int initialHealth = 10;
+
+        private Point position;
+        private Point oldPosition;
+
+        private int borderPlayerXValue;
+        private int borderPlayerYValue;
         public int Health { get; private set; }
         public Move WhereToGo { get; set; }
-        public bool TakeAwayHealth(int damage)
+        public Player(int borderX, int borderY)
+        {
+            position.X = startPositionX;
+            position.Y = startPositionY;
+
+            borderPlayerXValue = borderX - 1;
+            borderPlayerYValue = borderY - 1;
+
+            Health = initialHealth;
+
+            oldPosition.X = position.X;
+            oldPosition.Y = position.Y;
+        }
+        public bool DepriveHealth(int damage)
         {
             Health -= damage;
+
             if (Health <= 0)
+            {
                 return true;
+            }
             return false;
         }
         public int GetPositionX()
         {
-            return _position.x;
+            return position.X;
         }
         public int GetPositionY()
         {
-            return _position.y;
+            return position.Y;
         }
         public void DrawPlayer()
         {
-            _oldPosition.Clear();
+            oldPosition.ClearPoint();
+
             Console.ForegroundColor = ConsoleColor.Blue;
-            _position.Draw(_viewPlayer);
+            position.DrawPoint(viewPlayer);
+
             Console.ResetColor();
         }
-        public void Move()
+        public void MovePlayer()
         {
-            _oldPosition.x = _position.x;
-            _oldPosition.y = _position.y;
+            oldPosition.X = position.X;
+            oldPosition.Y = position.Y;
+
             switch (WhereToGo)
             {
-                case EPAMHomework_SokolovVlad.Move.Up:
-                    _position.y--;
+                case Move.Up:
+                    position.Y--;
                     break;
-                case EPAMHomework_SokolovVlad.Move.Down:
-                    _position.y++;
+                case Move.Down:
+                    position.Y++;
                     break;
-                case EPAMHomework_SokolovVlad.Move.Right:
-                    _position.x++;
+                case Move.Right:
+                    position.X++;
                     break;
-                case EPAMHomework_SokolovVlad.Move.Left:
-                    _position.x--;
+                case Move.Left:
+                    position.X--;
                     break;
             }
-            if(!IsAbroad())
+            if (!LeaveBorder())
+            {
                 DrawPlayer();
+            }
             else
             {
-                _position.x = _oldPosition.x;
-                _position.y = _oldPosition.y;
+                position.X = oldPosition.X;
+                position.Y = oldPosition.Y;
             }
         }
-        public bool IsAbroad()
+        public bool LeaveBorder()
         {
-            if (_position.x == 0 || _position.x == _borderPlayerX || _position.y == 0 || _position.y == _borderPlayerY)
+            if (position.X == 0 || position.X == borderPlayerXValue || position.Y == 0 || position.Y == borderPlayerYValue)
+            {
                 return true;
+            }
             return false;
         }
-        public bool IsPrincessFound(Сoordinate princess)
+        public bool FoundPrincess(Point princess)
         {
-            if (_position.x == princess.x && _position.y == princess.y)
+            if (position.X == princess.X && position.Y == princess.Y)
+            {
                 return true;
+            }
             return false;
-        }
-        public Player(int borderX, int borderY)
-        {
-            _borderPlayerX = borderX-1;
-            _borderPlayerY = borderY-1;
-            Health = 10;
-            _position.x = borderX-2;
-            _position.y = 1;
-            _oldPosition.x = _position.x;
-            _oldPosition.y = _position.y;
         }
     }
 }

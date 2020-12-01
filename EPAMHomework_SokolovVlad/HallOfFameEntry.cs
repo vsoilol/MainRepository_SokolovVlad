@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace EPAMHomework_SokolovVlad
+namespace PrincessGame
 {
-    struct HallOfFameEntry
+    public struct HallOfFameEntry
     {
         public string Name { get; set; }
-        public DateTime Score { get; set; }
+        public DateTime PassageTime { get; set; }
     }
 }

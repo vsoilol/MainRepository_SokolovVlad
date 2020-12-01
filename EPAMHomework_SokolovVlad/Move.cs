@@ -1,6 +1,6 @@
-﻿namespace EPAMHomework_SokolovVlad
+﻿namespace PrincessGame
 {
-    enum Move
+    public enum Move
     {
         Up,
         Down,

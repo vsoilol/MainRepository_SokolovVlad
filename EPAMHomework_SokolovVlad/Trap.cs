@@ -1,36 +1,41 @@
 ﻿using System;
 
-namespace EPAMHomework_SokolovVlad
+namespace PrincessGame
 {
-    class Trap
+    public class Trap
     {
-        Сoordinate _trapPosition;
-        Random _random;
+        private const char viewTrap = '1';
+
+        private Point trapPosition;
+        private Random randomValue;
         public int Damage { get; private set; }
-        public bool IsTrap(int positionX, int positionY)
+        public Trap(int maxHealth, int maxPositionY, int maxPositionX, int positionPlayerX, int positionPlayerY, int positionPrincessX, int positionPrincessY)
         {
-            if (positionX == _trapPosition.x && positionY == _trapPosition.y)
-                return true;
-            return false;
-        }
-        public Trap(int maxHealth, int maxY, int maxX, int positionPlayerX, int positionPlayerY, int positionPrincessX, int positionPrincessY)
-        {
-            _random = new Random();
-            Damage = _random.Next(1, maxHealth);
+            randomValue = new Random();
+            Damage = randomValue.Next(1, maxHealth);
+
             do
             {
-                _trapPosition.x = _random.Next(1, maxX - 1);
-                _trapPosition.y = _random.Next(1, maxY - 1);
+                trapPosition.X = randomValue.Next(1, maxPositionX - 1);
+                trapPosition.Y = randomValue.Next(1, maxPositionY - 1);
             }
-            while ((_trapPosition.x == positionPlayerX && _trapPosition.y == positionPlayerY) || (_trapPosition.x == positionPrincessX && _trapPosition.y == positionPrincessY));
+            while ((trapPosition.X == positionPlayerX && trapPosition.Y == positionPlayerY) || (trapPosition.X == positionPrincessX && trapPosition.Y == positionPrincessY));
+        }
+        public bool FallTrap(int positionX, int positionY)
+        {
+            if (positionX == trapPosition.X && positionY == trapPosition.Y)
+            {
+                return true;
+            }
+            return false;
         }
         public void HideTrap()
         {
-            _trapPosition.Draw(' ');
+            trapPosition.DrawPoint(' ');
         }
         public void ViewTrap()
         {
-            _trapPosition.Draw('1');
+            trapPosition.DrawPoint(viewTrap);
         }
 
     }

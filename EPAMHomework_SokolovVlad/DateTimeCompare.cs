@@ -1,17 +1,23 @@
 ﻿using System.Collections.Generic;
 
-namespace EPAMHomework_SokolovVlad
+namespace PrincessGame
 {
-    class DateTimeCompare : IComparer<HallOfFameEntry>
+    public class DateTimeCompare : IComparer<HallOfFameEntry>
     {
-        public int Compare(HallOfFameEntry x, HallOfFameEntry y)
+        public int Compare(HallOfFameEntry firstValue, HallOfFameEntry secondValue)
         {
-            if (x.Score > y.Score)
+            if (firstValue.PassageTime > secondValue.PassageTime)
+            {
                 return 1;
-            else if (x.Score < y.Score)
+            }
+            else if (firstValue.PassageTime < secondValue.PassageTime)
+            {
                 return -1;
+            }
             else
+            {
                 return 0;
+            }
         }
     }
 }

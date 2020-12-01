@@ -1,20 +1,19 @@
-﻿
-using System;
+﻿using System;
 
-namespace EPAMHomework_SokolovVlad
+namespace PrincessGame
 {
-    struct Сoordinate
+    public struct Point
     {
-        public int x { get; set; }
-        public int y { get; set; }
-        public void Draw(char drawing)
+        public int X { get; set; }
+        public int Y { get; set; }
+        public void DrawPoint(char drawing)
         {
-            Console.SetCursorPosition(x, y);
+            Console.SetCursorPosition(X, Y);
             Console.Write(drawing);
         }
-        public void Clear()
+        public void ClearPoint()
         {
-            Draw(' ');
+            DrawPoint(' ');
         }
     }
 }
