@@ -12,8 +12,8 @@ namespace PrincessGame
         private Point position;
         private Point oldPosition;
 
-        private int borderPlayerXValue;
-        private int borderPlayerYValue;
+        private readonly int borderPlayerXValue;
+        private readonly int borderPlayerYValue;
         public int Health { get; private set; }
         public Move WhereToGo { get; set; }
         public Player(int borderX, int borderY)

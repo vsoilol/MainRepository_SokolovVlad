@@ -11,18 +11,18 @@ namespace PrincessGame
         private const int timeWait = 500;
 
         private const int inscriptionDamagePositionX = 0;
-        private int inscriptionDamagePositionY;
+        private readonly int inscriptionDamagePositionY;
 
         private const int inscriptionHPMenuPositionX = 0;
-        private int inscriptionHPMenuPositionY;
+        private readonly int inscriptionHPMenuPositionY;
 
-        private int numberTraps = 0;
+        private readonly int numberTraps = 0;
 
         private Point princess;//Координаты принцессы
         private Player player;//Игрок
 
-        private int borderSizeX;
-        private int borderSizeY;
+        private readonly int borderSizeX;
+        private readonly int borderSizeY;
 
         private bool areTrapsShow;
         private bool inGame = true;

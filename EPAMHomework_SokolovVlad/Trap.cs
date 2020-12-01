@@ -7,7 +7,7 @@ namespace PrincessGame
         private const char viewTrap = '1';
 
         private Point trapPosition;
-        private Random randomValue;
+        private readonly Random randomValue;
         public int Damage { get; private set; }
         public Trap(int maxHealth, int maxPositionY, int maxPositionX, int positionPlayerX, int positionPlayerY, int positionPrincessX, int positionPrincessY)
         {

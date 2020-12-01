@@ -6,11 +6,11 @@ namespace PrincessGame
 {
     public static class HallOfFame
     {
-        private static string fileName = "HallOfFame.txt";
+        private static readonly string fileName = "HallOfFame.txt";
         private const int maxEntries = 10;
 
-        private static List<HallOfFameEntry> entries = new List<HallOfFameEntry>();
-        private static DateTimeCompare passageTime = new DateTimeCompare();
+        private static readonly List<HallOfFameEntry> entries = new List<HallOfFameEntry>();
+        private static readonly DateTimeCompare passageTime = new DateTimeCompare();
         private static void GetHallOfFame()
         {
             entries.Clear();
