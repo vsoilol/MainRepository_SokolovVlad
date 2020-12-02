@@ -2,7 +2,7 @@
 
 namespace PrincessGame
 {
-    public class DateTimeCompare : IComparer<HallOfFameEntry>
+    public class DateTimeComparer : IComparer<HallOfFameEntry>
     {
         public int Compare(HallOfFameEntry firstValue, HallOfFameEntry secondValue)
         {

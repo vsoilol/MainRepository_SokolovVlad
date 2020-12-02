@@ -10,6 +10,10 @@ namespace PrincessGame
 
         private const int timeWait = 500;
 
+        private const int indentBorder = 2;
+        private const int indentInscriptionDamagePositionY = 2;
+        private const int indentInscriptionTimePositionY = 1;
+
         private const int inscriptionDamagePositionX = 0;
         private readonly int inscriptionDamagePositionY;
 
@@ -30,29 +34,35 @@ namespace PrincessGame
         private Trap[] traps;
 
         private Timer timerSecond;
+
         private DateTime passageTime;
+
         public Game(int fieldSizeX, int fieldSizeY, int numberTraps)
         {
             Console.CursorVisible = false;
 
-            borderSizeX = fieldSizeX + 2;
-            borderSizeY = fieldSizeY + 2;
+            borderSizeX = fieldSizeX + indentBorder;
+            borderSizeY = fieldSizeY + indentBorder;
 
             princess.X = fieldSizeX;
             princess.Y = fieldSizeY;
 
             this.numberTraps = numberTraps;
 
-            inscriptionDamagePositionY = borderSizeY + 2;
+            inscriptionDamagePositionY = borderSizeY + indentInscriptionDamagePositionY;
             inscriptionHPMenuPositionY = borderSizeY;
         }
+
         public void AddTime(object state)
         {
-            Console.SetCursorPosition(0, borderSizeY + 1);
+            Console.SetCursorPosition(0, borderSizeY + indentInscriptionTimePositionY);
             Console.ResetColor();
+
             passageTime = passageTime.AddSeconds(1);
+
             Console.Write($"Прошло {passageTime.ToLongTimeString()}");
         }
+
         public void PlayGame()//играть
         {
             passageTime = new DateTime();
@@ -84,6 +94,7 @@ namespace PrincessGame
                 }
             }
         }
+
         public void CreateTraps()//Создать ловушки
         {
             areTrapsShow = false;
@@ -94,6 +105,7 @@ namespace PrincessGame
                 traps[i] = new Trap(player.Health, borderSizeY, borderSizeX, player.GetPositionX(), player.GetPositionY(), princess.X, princess.Y);
             }
         }
+
         public void ShowTraps()//Показать или скрыть ловушки
         {
             if (areTrapsShow)
@@ -113,6 +125,7 @@ namespace PrincessGame
                 areTrapsShow = true;
             }
         }
+
         public void CreateHPMenu()//Счетчик HP
         {
             Console.ForegroundColor = ConsoleColor.Red;
@@ -121,9 +134,11 @@ namespace PrincessGame
             Console.Write(new String(' ', Console.BufferWidth));
 
             Console.SetCursorPosition(inscriptionHPMenuPositionX, inscriptionHPMenuPositionY);
+
             Console.WriteLine($"HP: {player.Health}");
             Console.ResetColor();
         }
+
         public void CreateField()//Создать рамку
         {
             Console.ForegroundColor = ConsoleColor.Green;
@@ -143,19 +158,24 @@ namespace PrincessGame
                 }
                 Console.WriteLine();
             }
+
             Console.ResetColor();
         }
+
         public void CreatePlayer()//Создать игрока
         {
             player = new Player(borderSizeX, borderSizeY);
             player.DrawPlayer();
         }
+
         public void CreatePrincess()//Создать принцессу
         {
             Console.ForegroundColor = ConsoleColor.Magenta;
+
             princess.DrawPoint(viewPrincess);
             Console.ResetColor();
         }
+
         public void MovePlayer(Move move)//Передвинуть игрока
         {
             player.WhereToGo = move;
@@ -164,6 +184,7 @@ namespace PrincessGame
             FoundPrincess();
             EncounteredTrap();
         }
+
         public void EncounteredTrap()//Встречаются Ловушки
         {
             foreach (Trap trap in traps)
@@ -184,6 +205,7 @@ namespace PrincessGame
                 }
             }
         }
+
         public void ShowCausedDamage(int damage)//Показывает какой урон получил
         {
             Console.SetCursorPosition(inscriptionDamagePositionX, inscriptionDamagePositionY);
@@ -195,8 +217,8 @@ namespace PrincessGame
             Console.SetCursorPosition(inscriptionDamagePositionX, inscriptionDamagePositionY);
             Console.Write(new String(' ', Console.BufferWidth));
             Console.ResetColor();
-
         }
+
         public void StartNewGame()//Начать новую игру
         {
             CreateField();
@@ -206,6 +228,7 @@ namespace PrincessGame
             CreateTraps();
             PlayGame();
         }
+
         public void RunMenu()
         {
             ConsoleOutput.CreateMenu();
@@ -232,9 +255,11 @@ namespace PrincessGame
                     break;
             }
         }
+
         public void ResetGame()
         {
             timerSecond.Dispose();
+
             Console.Write("Нажмите SPACE чтобы войти в меню: ");
             ConsoleKey consoleKey;
 
@@ -248,6 +273,7 @@ namespace PrincessGame
             }
             while (consoleKey != (ConsoleKey)Button.ResetGame);
         }
+
         public void WriteRecord()
         {
             timerSecond.Dispose();
@@ -265,6 +291,7 @@ namespace PrincessGame
 
             HallOfFame.AddResult(entry);
         }
+
         public void FoundPrincess()
         {
             if (player.FoundPrincess(princess))

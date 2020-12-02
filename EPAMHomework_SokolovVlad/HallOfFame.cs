@@ -10,10 +10,12 @@ namespace PrincessGame
         private const int maxEntries = 10;
 
         private static readonly List<HallOfFameEntry> entries = new List<HallOfFameEntry>();
-        private static readonly DateTimeCompare passageTime = new DateTimeCompare();
+        private static readonly DateTimeComparer passageTime = new DateTimeComparer();
+
         private static void GetHallOfFame()
         {
             entries.Clear();
+
             if (File.Exists(fileName))
             {
                 using (StreamReader read = new StreamReader(fileName))
@@ -36,6 +38,7 @@ namespace PrincessGame
                 }
             }
         }
+
         public static void AddResult(HallOfFameEntry entry)
         {
             GetHallOfFame();
@@ -47,8 +50,10 @@ namespace PrincessGame
             {
                 entries.RemoveAt(entries.Count - 1);
             }
+
             SaveHallOfFame();
         }
+
         private static void SaveHallOfFame()
         {
             using (StreamWriter write = new StreamWriter(fileName, false))
@@ -59,6 +64,7 @@ namespace PrincessGame
                 }
             }
         }
+
         public static void ShowHallOfFame()
         {
             GetHallOfFame();

@@ -17,6 +17,7 @@ namespace PrincessGame
             Console.WriteLine("3 - Выйти");
             Console.ResetColor();
         }
+
         public static string EnterRecord()
         {
             Console.WriteLine("Запись рекорда");
@@ -25,6 +26,7 @@ namespace PrincessGame
             string namePlayer = Console.ReadLine();
             return namePlayer;
         }
+
         public static void LoseGame()
         {
             Console.Clear();
@@ -32,6 +34,7 @@ namespace PrincessGame
             Console.WriteLine("Game Over");
             Console.ResetColor();
         }
+
         public static void WinGame()
         {
             Console.Clear();

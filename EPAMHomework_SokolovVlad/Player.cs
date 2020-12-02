@@ -9,44 +9,48 @@ namespace PrincessGame
         private const int startPositionY = 1;
         private const int initialHealth = 10;
 
+        private const int indentBorderPlayer = 1;
+
         private Point position;
         private Point oldPosition;
 
         private readonly int borderPlayerXValue;
         private readonly int borderPlayerYValue;
+
         public int Health { get; private set; }
         public Move WhereToGo { get; set; }
+
         public Player(int borderX, int borderY)
         {
             position.X = startPositionX;
             position.Y = startPositionY;
 
-            borderPlayerXValue = borderX - 1;
-            borderPlayerYValue = borderY - 1;
+            borderPlayerXValue = borderX - indentBorderPlayer;
+            borderPlayerYValue = borderY - indentBorderPlayer;
 
             Health = initialHealth;
 
             oldPosition.X = position.X;
             oldPosition.Y = position.Y;
         }
+
         public bool DepriveHealth(int damage)
         {
             Health -= damage;
 
-            if (Health <= 0)
-            {
-                return true;
-            }
-            return false;
+            return (Health <= 0) ? true : false;
         }
+
         public int GetPositionX()
         {
             return position.X;
         }
+
         public int GetPositionY()
         {
             return position.Y;
         }
+
         public void DrawPlayer()
         {
             oldPosition.ClearPoint();
@@ -56,6 +60,7 @@ namespace PrincessGame
 
             Console.ResetColor();
         }
+
         public void MovePlayer()
         {
             oldPosition.X = position.X;
@@ -76,6 +81,7 @@ namespace PrincessGame
                     position.X--;
                     break;
             }
+
             if (!LeaveBorder())
             {
                 DrawPlayer();
@@ -86,21 +92,15 @@ namespace PrincessGame
                 position.Y = oldPosition.Y;
             }
         }
+
         public bool LeaveBorder()
         {
-            if (position.X == 0 || position.X == borderPlayerXValue || position.Y == 0 || position.Y == borderPlayerYValue)
-            {
-                return true;
-            }
-            return false;
+            return (position.X == 0 || position.X == borderPlayerXValue || position.Y == 0 || position.Y == borderPlayerYValue) ? true : false;
         }
+
         public bool FoundPrincess(Point princess)
         {
-            if (position.X == princess.X && position.Y == princess.Y)
-            {
-                return true;
-            }
-            return false;
+            return (position.X == princess.X && position.Y == princess.Y) ? true : false;
         }
     }
 }
