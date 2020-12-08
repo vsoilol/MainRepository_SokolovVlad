@@ -6,7 +6,6 @@ namespace BankGame
 {
     public class Account
     {
-
         private const int maxNameLength = 20;
         private readonly Random randomValue;
 
