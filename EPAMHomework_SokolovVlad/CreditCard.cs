@@ -3,7 +3,7 @@
     public class CreditCard : Card
     {
         private const int percentCredit = 20;
-        
+
         private int numberMonthsCredit;
         private int numberMonthsPaid = 0;
         private readonly double monthlyDebt;

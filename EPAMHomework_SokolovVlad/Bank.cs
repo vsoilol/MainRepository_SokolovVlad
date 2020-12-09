@@ -131,7 +131,7 @@ namespace BankGame
             {
                 card = ShowListCards(true);
 
-                if(card == null)
+                if (card == null)
                 {
                     return;
                 }
@@ -150,7 +150,7 @@ namespace BankGame
 
             if (isOperation)
             {
-                if((card as CreditCard).IsMoneyLessZero())
+                if ((card as CreditCard).IsMoneyLessZero())
                 {
                     ConsoleProvider.ErrorOperation();
                 }
@@ -162,7 +162,7 @@ namespace BankGame
                     }
                 }
 
-                if((card as CreditCard).IsDeptRepay())
+                if ((card as CreditCard).IsDeptRepay())
                 {
                     RemoveCard(card);
                 }

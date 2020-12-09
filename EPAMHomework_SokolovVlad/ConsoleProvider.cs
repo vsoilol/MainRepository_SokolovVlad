@@ -185,7 +185,7 @@ namespace BankGame
                 numberCard++;
             }
 
-            if(numberCard == 1)
+            if (numberCard == 1)
             {
                 Console.WriteLine("Нет карт");
                 Console.ReadKey();
