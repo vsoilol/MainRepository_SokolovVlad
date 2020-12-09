@@ -45,6 +45,11 @@ namespace BankGame
             Cards.Add(new DepositCard());
         }
 
+        public void RemoveCard(Card card)
+        {
+            Cards.Remove(card);
+        }
+
         public void ChooseCard()
         {
             CardType cardType = (CardType)ConsoleProvider.ChooseCardType();

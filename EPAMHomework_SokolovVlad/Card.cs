@@ -9,7 +9,7 @@
             Money += amountMoney;
         }
 
-        public bool WithdrawMoney(int amountMoney)
+        public bool WithdrawMoney(double amountMoney)
         {
             if ((Money - amountMoney) < 0)
             {

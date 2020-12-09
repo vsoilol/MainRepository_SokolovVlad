@@ -130,6 +130,12 @@ namespace BankGame
             while (true)
             {
                 card = ShowListCards(true);
+
+                if(card == null)
+                {
+                    return;
+                }
+
                 if (card is DepositCard)
                 {
                     ConsoleProvider.NotCreditCard();
@@ -144,7 +150,33 @@ namespace BankGame
 
             if (isOperation)
             {
-                (card as CreditCard).RepayDebt();
+                if((card as CreditCard).IsMoneyLessZero())
+                {
+                    ConsoleProvider.ErrorOperation();
+                }
+                else
+                {
+                    if (!(card as CreditCard).RepayDebt())
+                    {
+                        ConsoleProvider.ErrorOperation();
+                    }
+                }
+
+                if((card as CreditCard).IsDeptRepay())
+                {
+                    RemoveCard(card);
+                }
+            }
+        }
+
+        public void RemoveCard(Card card)
+        {
+            foreach (Account account in accounts)
+            {
+                if (account.Cards.Contains(card))
+                {
+                    account.RemoveCard(card);
+                }
             }
         }
 
@@ -209,7 +241,7 @@ namespace BankGame
 
             int transferableMoney = ConsoleProvider.EnterMoney("Введите сумму для перевода: ");
 
-            if ((card is CreditCard) && !(card as CreditCard).IsDeptRepay())
+            if ((card is CreditCard) && !(card as CreditCard).IsMonthlyDeptRepay())
             {
                 ConsoleProvider.ErrorOperation();
             }

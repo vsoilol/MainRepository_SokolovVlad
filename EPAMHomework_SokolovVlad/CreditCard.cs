@@ -4,8 +4,8 @@
     {
         private const int percentCredit = 20;
         
-        private readonly int numberMonthsCredit;
-        private readonly int numberMonthsPaid = 0;
+        private int numberMonthsCredit;
+        private int numberMonthsPaid = 0;
         private readonly double monthlyDebt;
 
         public double AmountdDebt { get; private set; }
@@ -20,18 +20,33 @@
             AddDebt();
         }
 
-        public void RepayDebt()
+        public bool RepayDebt()
         {
-            Money -= AmountdDebt;
-            AmountdDebt = 0;
+            if (WithdrawMoney(AmountdDebt))
+            {
+                numberMonthsPaid += (int)(AmountdDebt / monthlyDebt);
+                AmountdDebt = 0;
+                return true;
+            }
+            return false;
+        }
+
+        public bool IsDeptRepay()
+        {
+            return (numberMonthsPaid == numberMonthsCredit) ? true : false;
         }
 
         public void AddDebt()
         {
+            if (!IsMonthlyDeptRepay())
+            {
+                numberMonthsCredit++;
+            }
             AmountdDebt += monthlyDebt;
+
         }
 
-        public bool IsDeptRepay()
+        public bool IsMonthlyDeptRepay()
         {
             return AmountdDebt == 0 ? true : false;
         }
@@ -43,7 +58,7 @@
 
         public override bool TransferCard(Card transferableCard, int amountMoney)
         {
-            if ((transferableCard is DepositCard) || IsMoneyLessZero() || !IsDeptRepay())
+            if ((transferableCard is DepositCard) || IsMoneyLessZero() || !IsMonthlyDeptRepay())
             {
                 return false;
             }
