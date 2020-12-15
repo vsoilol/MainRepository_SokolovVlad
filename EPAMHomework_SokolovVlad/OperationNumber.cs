@@ -4,13 +4,13 @@
     {
         CreateAccount = 1,
         AddCard,
-        PutMoneyCard,
+        PutMoneyToAccount,
         TransferFunds,
-        ListCards,
-        WithdrawMoney,
+        WithdrawMoneyFromAccount,
         TransferMoneyToAccount,
         WatchDebt,
         RepayDebt,
+        ListAccounts,
         PassMonth
     }
 }

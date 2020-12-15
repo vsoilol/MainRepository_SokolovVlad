@@ -1,32 +1,42 @@
-﻿namespace BankGame
+﻿using System;
+
+namespace BankGame
 {
     public abstract class Card
     {
-        public double Money { get; set; }
+        private const int lengthName = 16;
 
-        public void PutMoney(int amountMoney)
+        private readonly Random randomNumber;
+
+        public string Name { get; private set; }
+
+        public Card()
         {
-            Money += amountMoney;
+            randomNumber = new Random();
+
+            Name = GenerateName();
         }
 
-        public bool WithdrawMoney(double amountMoney)
+        public string GenerateName()
         {
-            if ((Money - amountMoney) < 0)
+            string randomWord = "";
+
+            for (int i = 0; i < lengthName; i++)
             {
-                return false;
+                randomWord += randomNumber.Next(1, 9);
             }
 
-            Money -= amountMoney;
-            return true;
+            return randomWord;
         }
 
-        public virtual bool TransferCard(Card transferableCard, int amountMoney)
+        public virtual bool TransferToCard(Account account, Account transferableAccount, int amountMoney)
         {
-            if (WithdrawMoney(amountMoney))
+            if (account.WithdrawMoneyFromAccount(amountMoney))
             {
-                transferableCard.PutMoney(amountMoney);
+                transferableAccount.PutMoneyToAccount(amountMoney);
                 return true;
             }
+
             return false;
         }
     }

@@ -4,31 +4,29 @@
     {
         private const int percentCredit = 20;
 
-        private int numberMonthsCredit;
-        private int numberMonthsPaid = 0;
         private readonly double monthlyDebt;
 
-        public double AmountdDebt { get; private set; }
-        public CreditCard()
-        {
-            Money = ConsoleProvider.SetMoney(CardType.Credit);
-            numberMonthsCredit = ConsoleProvider.SetNumberMonthsCredit();
+        private int numberMonthsCredit;
+        private int numberMonthsPaid = 0;
 
-            monthlyDebt = (percentCredit / 100D) * (Money / numberMonthsCredit) + (Money / numberMonthsCredit);
+        public double AmountdDebt { get; private set; }
+
+        public CreditCard(int creditAmount, int numberMonthsCredit)
+        {
+            this.numberMonthsCredit = numberMonthsCredit;
+
+            monthlyDebt = (percentCredit / 100D) * (creditAmount / numberMonthsCredit) + (creditAmount / numberMonthsCredit);
             AmountdDebt = 0;
 
             AddDebt();
+
+            ConsoleProvider.ShowNameCard(Name, CardType.Credit);
         }
 
-        public bool RepayDebt()
+        public void RepayDebt()
         {
-            if (WithdrawMoney(AmountdDebt))
-            {
-                numberMonthsPaid += (int)(AmountdDebt / monthlyDebt);
-                AmountdDebt = 0;
-                return true;
-            }
-            return false;
+            numberMonthsPaid += (int)(AmountdDebt / monthlyDebt);
+            AmountdDebt = 0;
         }
 
         public bool IsDeptRepay()
@@ -42,6 +40,7 @@
             {
                 numberMonthsCredit++;
             }
+
             AmountdDebt += monthlyDebt;
 
         }
@@ -51,20 +50,15 @@
             return AmountdDebt == 0 ? true : false;
         }
 
-        public bool IsMoneyLessZero()
+        public override bool TransferToCard(Account account, Account transferableAccount, int amountMoney)
         {
-            return Money < 0 ? true : false;
-        }
-
-        public override bool TransferCard(Card transferableCard, int amountMoney)
-        {
-            if ((transferableCard is DepositCard) || IsMoneyLessZero() || !IsMonthlyDeptRepay())
+            if ((transferableAccount is DepositAccount) || account.IsMoneyLessZero())
             {
                 return false;
             }
             else
             {
-                return base.TransferCard(transferableCard, amountMoney);
+                return base.TransferToCard(account, transferableAccount, amountMoney);
             }
         }
     }

@@ -1,22 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace BankGame
 {
-    public class Account
+    public abstract class Account
     {
         private const int maxNameLength = 20;
+        private const string dictionaryString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
         private readonly Random randomValue;
 
-        public List<Card> Cards { get; private set; }
-
         public string NameAccount { get; set; }
+        public double Money { get; set; }
 
         public Account()
         {
-            Cards = new List<Card>();
             randomValue = new Random();
+
+            Money = 0;
 
             GenerateName();
             ConsoleProvider.ShowNameAccount(NameAccount);
@@ -24,7 +25,6 @@ namespace BankGame
 
         public void GenerateName()
         {
-            const string dictionaryString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             StringBuilder resultStringBuilder = new StringBuilder();
 
             for (int i = 1; i <= maxNameLength; i++)
@@ -35,34 +35,31 @@ namespace BankGame
             NameAccount = resultStringBuilder.ToString();
         }
 
-        public void AddCreditCard()
+        public void PutMoneyToAccount(double amountMoney)
         {
-            Cards.Add(new CreditCard());
+            Money += amountMoney;
         }
 
-        public void AddDepositCard()
+        public bool WithdrawMoneyFromAccount(double amountMoney)
         {
-            Cards.Add(new DepositCard());
-        }
-
-        public void RemoveCard(Card card)
-        {
-            Cards.Remove(card);
-        }
-
-        public void ChooseCard()
-        {
-            CardType cardType = (CardType)ConsoleProvider.ChooseCardType();
-
-            switch (cardType)
+            if ((Money - amountMoney) < 0)
             {
-                case CardType.Credit:
-                    AddCreditCard();
-                    break;
-                case CardType.Deposit:
-                    AddDepositCard();
-                    break;
+                return false;
             }
+
+            Money -= amountMoney;
+            return true;
         }
+
+        public bool IsMoneyLessZero()
+        {
+            return Money < 0 ? true : false;
+        }
+
+        public abstract void AddCardToAccount();
+
+        public abstract bool AnyCardsInAccount();
+
+        public abstract int GetNumberCards();
     }
 }
