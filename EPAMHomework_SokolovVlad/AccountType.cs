@@ -3,6 +3,6 @@
     public enum AccountType
     {
         Credit = 1,
-        Deposit,
+        Deposit = 2
     }
 }

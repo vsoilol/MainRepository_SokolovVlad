@@ -3,6 +3,6 @@
     public enum CardType
     {
         Credit = 1,
-        Deposit,
+        Deposit = 2
     }
 }

@@ -4,6 +4,6 @@
     {
         OnlyCreateAccount = 1,
         CreateAccountWithAddCards = 2,
-        AllOperation = 10,
+        AllOperation = 11,
     }
 }

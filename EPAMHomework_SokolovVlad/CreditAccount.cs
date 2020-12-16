@@ -1,62 +1,84 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BankGame
 {
     public class CreditAccount : Account
     {
-        public List<CreditCard> Cards { get; private set; }
+        public List<Credit> Credits { get; private set; }
 
         public CreditAccount() : base()
         {
-            Cards = new List<CreditCard>();
+            Credits = new List<Credit>();
         }
 
-        public override void AddCardToAccount()
+        public void AddCreditToAccount()
         {
             int creditAmount = ConsoleProvider.SetMoney(CardType.Credit);
             int numberMonthsCredit = ConsoleProvider.SetNumberMonthsCredit();
 
-            Cards.Add(new CreditCard(creditAmount, numberMonthsCredit));
+            Credits.Add(new Credit(creditAmount, numberMonthsCredit));
 
             Money += creditAmount;
         }
 
-        public override bool AnyCardsInAccount()
+        public bool IsDebtRepay(Credit credit)
         {
-            return (Cards.Count != 0) ? true : false;
-        }
-
-        public override int GetNumberCards()
-        {
-            return Cards.Count;
-        }
-
-        public bool RepayDebt(CreditCard card)
-        {
-            if (WithdrawMoneyFromAccount(card.AmountdDebt))
+            if (AreMoneyWithdrawFromAccount(credit.AmountdDebt))
             {
-                card.RepayDebt();
+                credit.RepayDebt();
                 return true;
             }
 
             return false;
         }
 
-        public void DeleteCard(CreditCard card)
+        public void DeleteCreditFromAccount(Credit credit)
         {
-            Cards.Remove(card);
+            Credits.Remove(credit);
         }
 
         public bool IsMonthlyDeptRepay()
         {
-            foreach (CreditCard card in Cards)
+            foreach (Credit credit in Credits)
             {
-                if (!card.IsMonthlyDeptRepay())
+                if (!credit.IsMonthlyDeptRepay())
                 {
                     return false;
                 }
             }
             return true;
+        }
+
+        public Credit ShowCredits(bool isOperation)
+        {
+            Console.Clear();
+
+            int numberCredit = 1;
+
+            foreach (Credit credit in Credits)
+            {
+                Console.WriteLine($"{numberCredit}. Кредит {credit.CreditNumber}");
+                numberCredit++;
+            }
+
+            if (numberCredit == 1)
+            {
+                Console.WriteLine("Нет кредитов");
+                Console.ReadKey();
+                return null;
+            }
+
+            if (!isOperation)
+            {
+                Console.ReadKey();
+                return null;
+            }
+            else
+            {
+                int numberCreditResult = ConsoleProvider.GetNumber(Credits.Count) - 1;
+                return Credits[numberCreditResult];
+            }
         }
     }
 }

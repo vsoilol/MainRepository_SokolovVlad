@@ -1,26 +1,44 @@
-﻿namespace BankGame
+﻿using System;
+
+namespace BankGame
 {
-    public class CreditCard : Card
+    public class Credit
     {
         private const int percentCredit = 20;
+        private const int creditNumberLength = 4;
 
         private readonly double monthlyDebt;
 
         private int numberMonthsCredit;
         private int numberMonthsPaid = 0;
 
+        private readonly Random randomNumber;
+
         public double AmountdDebt { get; private set; }
 
-        public CreditCard(int creditAmount, int numberMonthsCredit)
+        public string CreditNumber { get; private set; }
+
+        public Credit(int creditAmount, int numberMonthsCredit)
         {
+            randomNumber = new Random();
+            CreateCreditNumber();
+
             this.numberMonthsCredit = numberMonthsCredit;
 
             monthlyDebt = (percentCredit / 100D) * (creditAmount / numberMonthsCredit) + (creditAmount / numberMonthsCredit);
             AmountdDebt = 0;
 
             AddDebt();
+        }
 
-            ConsoleProvider.ShowNameCard(Name, CardType.Credit);
+        public void CreateCreditNumber()
+        {
+            CreditNumber = "";
+
+            for (int i = 0; i < creditNumberLength; i++)
+            {
+                CreditNumber += randomNumber.Next(1, 9);
+            }
         }
 
         public void RepayDebt()
@@ -48,18 +66,6 @@
         public bool IsMonthlyDeptRepay()
         {
             return AmountdDebt == 0 ? true : false;
-        }
-
-        public override bool TransferToCard(Account account, Account transferableAccount, int amountMoney)
-        {
-            if ((transferableAccount is DepositAccount) || account.IsMoneyLessZero())
-            {
-                return false;
-            }
-            else
-            {
-                return base.TransferToCard(account, transferableAccount, amountMoney);
-            }
         }
     }
 }

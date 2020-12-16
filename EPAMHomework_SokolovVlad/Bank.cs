@@ -1,10 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace BankGame
 {
     public class Bank
     {
+        private const string chooseAccountTransferToAccount = "Выберете счет с которой будет производится перевод.";
+        private const string choosePutToAccountMoney = "Выберете счет на который будет сделан перевод.";
+        private const string enterTransferableAmount = "Введите сумму для перевода: ";
+        private const string putMoneyToAccount = "Введите сумму которую хотите положить на счёт: ";
+        private const string withdrawMoneyFromAccount = "Введите сумму которую хотите снять со счета: ";
+
         private readonly List<Account> accounts;
 
         public string NameBank { get; private set; }
@@ -40,7 +47,7 @@ namespace BankGame
                 {
                     ChooseOperation(OperationType.OnlyCreateAccount);
                 }
-                else if (!AreAccountsHaveCards())
+                else if (!AreHaveCards())
                 {
                     ChooseOperation(OperationType.CreateAccountWithAddCards);
                 }
@@ -66,23 +73,26 @@ namespace BankGame
                 case (int)OperationNumber.PutMoneyToAccount:
                     PutMoneyToAccount();
                     break;
-                case (int)OperationNumber.TransferFunds:
-                    TransferToCard();
+                case (int)OperationNumber.TransferCardToAnotherCard:
+                    TransferFromAccountToCard();
                     break;
                 case (int)OperationNumber.WithdrawMoneyFromAccount:
                     WithdrawMoneyFromAccount();
                     break;
                 case (int)OperationNumber.TransferMoneyToAccount:
-                    TransferToAccount();
+                    TransferAccountToAccount();
                     break;
-                case (int)OperationNumber.WatchDebt:
+                case (int)OperationNumber.WatchDebtOnCard:
                     RepayDebt(false);
                     break;
-                case (int)OperationNumber.RepayDebt:
+                case (int)OperationNumber.RepayDebtFromCard:
                     RepayDebt(true);
                     break;
-                case (int)OperationNumber.ListAccounts:
-                    ConsoleProvider.ShowListAccounts(accounts, false);
+                case (int)OperationNumber.ShowListAccounts:
+                    ShowListAccounts(false);
+                    break;
+                case (int)OperationNumber.AddCreditToAccount:
+                    AddCreditToAccount();
                     break;
                 case (int)OperationNumber.PassMonth:
                     PassMonth();
@@ -90,11 +100,25 @@ namespace BankGame
             }
         }
 
-        public bool AreAccountsHaveCards()
+        public void AddCreditToAccount()
+        {
+            Account account = ShowListAccounts(true);
+
+            if (account is DepositAccount)
+            {
+                ConsoleProvider.ErrorOperation();
+            }
+            else
+            {
+                (account as CreditAccount).AddCreditToAccount();
+            }
+        }
+
+        public bool AreHaveCards()
         {
             foreach (Account account in accounts)
             {
-                if (account.AnyCardsInAccount())
+                if (account.Cards.Count != 0)
                 {
                     return true;
                 }
@@ -111,18 +135,18 @@ namespace BankGame
 
         public void PutMoneyToAccount()
         {
-            Account account = ConsoleProvider.ShowListAccounts(accounts, true);
-            int moneyToAccount = ConsoleProvider.EnterMoney("Введите сумму которую хотите положить на счёт: ");
+            Account account = ShowListAccounts(true);
+            int moneyToAccount = ConsoleProvider.EnterMoney(putMoneyToAccount);
 
             account.PutMoneyToAccount(moneyToAccount);
         }
 
         public void WithdrawMoneyFromAccount()
         {
-            Account account = ConsoleProvider.ShowListAccounts(accounts, true);
-            int moneyFromAccount = ConsoleProvider.EnterMoney("Введите сумму которую хотите снять со счета: ");
+            Account account = ShowListAccounts(true);
+            int moneyFromAccount = ConsoleProvider.EnterMoney(withdrawMoneyFromAccount);
 
-            if (!account.WithdrawMoneyFromAccount(moneyFromAccount))
+            if (!account.AreMoneyWithdrawFromAccount(moneyFromAccount))
             {
                 ConsoleProvider.ErrorOperation();
             }
@@ -130,12 +154,12 @@ namespace BankGame
 
         public void RepayDebt(bool isOperation)
         {
-            CreditCard card;
+            Credit credit;
             Account account;
 
             while (true)
             {
-                account = ConsoleProvider.ShowListAccounts(accounts, true);
+                account = ShowListAccounts(true);
 
                 if (account == null)
                 {
@@ -148,12 +172,12 @@ namespace BankGame
                 }
                 else
                 {
-                    card = ConsoleProvider.ShowCards((account as CreditAccount).Cards, true);
+                    credit = (account as CreditAccount).ShowCredits(true);
                     break;
                 }
             }
 
-            ConsoleProvider.InputDebt(card);
+            ConsoleProvider.InputDebt(credit);
 
             if (isOperation)
             {
@@ -163,15 +187,15 @@ namespace BankGame
                 }
                 else
                 {
-                    if (!(account as CreditAccount).RepayDebt(card))
+                    if (!(account as CreditAccount).IsDebtRepay(credit))
                     {
                         ConsoleProvider.ErrorOperation();
                     }
                 }
 
-                if (card.IsDeptRepay())
+                if (credit.IsDeptRepay())
                 {
-                    (account as CreditAccount).DeleteCard(card);
+                    (account as CreditAccount).DeleteCreditFromAccount(credit);
                 }
             }
         }
@@ -182,9 +206,9 @@ namespace BankGame
             {
                 if (account is CreditAccount)
                 {
-                    foreach (CreditCard card in (account as CreditAccount).Cards)
+                    foreach (Credit credit in (account as CreditAccount).Credits)
                     {
-                        card.AddDebt();
+                        credit.AddDebt();
                     }
                 }
                 else
@@ -194,10 +218,10 @@ namespace BankGame
             }
         }
 
-        public void TransferToCard()
+        public void TransferFromAccountToCard()
         {
-            ConsoleProvider.ChooseCard("Выберете счет и карту с которой будет производится перевод.");
-            Account account = ConsoleProvider.ShowListAccounts(accounts, true);
+            ConsoleProvider.ChooseCard(chooseAccountTransferToAccount);
+            Account account = ShowListAccounts(true);
 
             Card card;
 
@@ -210,16 +234,16 @@ namespace BankGame
                 card = ConsoleProvider.ShowCards((account as DepositAccount).Cards, true);
             }
 
-            ConsoleProvider.ChooseCard("Выберете счет на который будет сделан перевод.");
-            Account transferableAccount = ConsoleProvider.ShowListAccounts(accounts, true);
+            ConsoleProvider.ChooseCard(choosePutToAccountMoney);
+            Account transferableAccount = ShowListAccounts(true);
 
-            int transferableMoney = ConsoleProvider.EnterMoney("Введите сумму для перевода: ");
+            int transferableMoney = ConsoleProvider.EnterMoney(enterTransferableAmount);
 
             if (account is CreditAccount)
             {
                 if ((account as CreditAccount).IsMonthlyDeptRepay())
                 {
-                    if (!(card as CreditCard).TransferToCard(account, transferableAccount, transferableMoney))
+                    if ((transferableAccount is DepositAccount) || account.IsMoneyLessZero() || !card.IsCardTransferToCard(account, transferableAccount, transferableMoney))
                     {
                         ConsoleProvider.ErrorOperation();
                     }
@@ -231,17 +255,17 @@ namespace BankGame
             }
             else
             {
-                if (!(card as DepositCard).TransferToCard(account, transferableAccount, transferableMoney))
+                if (!card.IsCardTransferToCard(account, transferableAccount, transferableMoney))
                 {
                     ConsoleProvider.ErrorOperation();
                 }
             }
         }
 
-        public void TransferToAccount()
+        public void TransferAccountToAccount()
         {
-            ConsoleProvider.ChooseCard("Выберете счет с которого будет производится перевод.");
-            Account account = ConsoleProvider.ShowListAccounts(accounts, true);
+            ConsoleProvider.ChooseCard(chooseAccountTransferToAccount);
+            Account account = ShowListAccounts(true);
 
             string nameAccount;
 
@@ -253,7 +277,7 @@ namespace BankGame
             }
             while (!nameAccountRegex.IsMatch(nameAccount));
 
-            int transferableMoney = ConsoleProvider.EnterMoney("Введите сумму для перевода: ");
+            int transferableMoney = ConsoleProvider.EnterMoney(enterTransferableAmount);
 
             if ((account is CreditAccount) && !(account as CreditAccount).IsMonthlyDeptRepay())
             {
@@ -261,10 +285,40 @@ namespace BankGame
             }
             else
             {
-                if (!account.WithdrawMoneyFromAccount(transferableMoney))
+                if (!account.AreMoneyWithdrawFromAccount(transferableMoney))
                 {
                     ConsoleProvider.ErrorOperation();
                 }
+            }
+        }
+
+        public Account ShowListAccounts(bool isOperation)
+        {
+            Console.Clear();
+            int numberAccount = 1;
+
+            foreach (Account account in accounts)
+            {
+                if (account is CreditAccount)
+                {
+                    Console.WriteLine($"{numberAccount}. {account.NameAccount} - {ConsoleProvider.AccountCredit}, на этом счету {account.Money} денег. {ConsoleProvider.CardsOnAccount} - {account.Cards.Count}");
+                }
+                else
+                {
+                    Console.WriteLine($"{numberAccount}. {account.NameAccount} - {ConsoleProvider.AccountDeposit}, на этом счету {account.Money} денег. {ConsoleProvider.CardsOnAccount} - {account.Cards.Count}");
+                }
+                numberAccount++;
+            }
+
+            if (isOperation)
+            {
+                int numberAccountResult = ConsoleProvider.GetNumber(accounts.Count) - 1;
+                return accounts[numberAccountResult];
+            }
+            else
+            {
+                Console.ReadKey();
+                return null;
             }
         }
     }

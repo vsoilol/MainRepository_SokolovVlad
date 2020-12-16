@@ -13,25 +13,33 @@ namespace BankGame
         private const string createAccount = "Создать счет";
         private const string addCard = "Добавить карту";
         private const string putMoneyToAccount = "Положить деньги на счет";
-        private const string transferFunds = "Перевести с карты на карту";
+        private const string transferCardToAnotherCard = "Перевести с карты на карту";
         private const string withdrawMoneyFromAccount = "Снять деньги со счета";
         private const string transferMoneyToAccount = "Перевести деньги на счет";
-        private const string watchDebt = "Посмотреть задолжность";
-        private const string repayDebt = "Погасить кредит";
-        private const string listAccounts = "Список счетов";
+        private const string watchDebtOnCard = "Посмотреть задолжность";
+        private const string repayDebtFromCard = "Погасить кредит";
+        private const string showListAccounts = "Список счетов";
+        private const string addCreditToAccount = "Взять кредит";
         private const string passMonth = "Пройти месяц";
 
-        private const string whatDo = "Что вы хотите сделать?";
+        private const string doWhat = "Что вы хотите сделать?";
 
-        private const string errorOperation = "Ошибка операции.";
+        private const string notWorkOperation = "Ошибка операции.";
 
         private const int firstNumberOperation = 1;
-        private const int numberCardsTypes = 2;
         private const int numberAccountTypes = 2;
+
+        public const string AccountCredit = "кредитный счет";
+        public const string AccountDeposit = "депозитный счет";
+
+        public const string CardCredit = "Кредитная карта";
+        public const string CardDeposit = "Депозитная карта";
+
+        public const string CardsOnAccount = "Карт на счету";
 
         public static int SelectOperation(OperationType operationType)
         {
-            Console.WriteLine(whatDo);
+            Console.WriteLine(doWhat);
             int result = 0;
 
             switch (operationType)
@@ -51,12 +59,13 @@ namespace BankGame
                     Console.WriteLine($"{(int)OperationNumber.CreateAccount}. {createAccount}");
                     Console.WriteLine($"{(int)OperationNumber.AddCard}. {addCard}");
                     Console.WriteLine($"{(int)OperationNumber.PutMoneyToAccount}. {putMoneyToAccount}");
-                    Console.WriteLine($"{(int)OperationNumber.TransferFunds}. {transferFunds}");
+                    Console.WriteLine($"{(int)OperationNumber.TransferCardToAnotherCard}. {transferCardToAnotherCard}");
                     Console.WriteLine($"{(int)OperationNumber.WithdrawMoneyFromAccount}. {withdrawMoneyFromAccount}");
                     Console.WriteLine($"{(int)OperationNumber.TransferMoneyToAccount}. {transferMoneyToAccount}");
-                    Console.WriteLine($"{(int)OperationNumber.WatchDebt}. {watchDebt}");
-                    Console.WriteLine($"{(int)OperationNumber.RepayDebt}. {repayDebt}");
-                    Console.WriteLine($"{(int)OperationNumber.ListAccounts}. {listAccounts}");
+                    Console.WriteLine($"{(int)OperationNumber.WatchDebtOnCard}. {watchDebtOnCard}");
+                    Console.WriteLine($"{(int)OperationNumber.RepayDebtFromCard}. {repayDebtFromCard}");
+                    Console.WriteLine($"{(int)OperationNumber.ShowListAccounts}. {showListAccounts}");
+                    Console.WriteLine($"{(int)OperationNumber.AddCreditToAccount}. {addCreditToAccount}");
                     Console.WriteLine($"{(int)OperationNumber.PassMonth}. {passMonth}");
 
                     result = GetNumber((int)OperationType.AllOperation);
@@ -124,8 +133,8 @@ namespace BankGame
             Console.Clear();
             Console.WriteLine("Выберете тип счета.");
 
-            Console.WriteLine($"{(int)AccountType.Credit}. Кредитный");
-            Console.WriteLine($"{(int)AccountType.Deposit}. Депозитный");
+            Console.WriteLine($"{(int)AccountType.Credit} - {AccountCredit}");
+            Console.WriteLine($"{(int)AccountType.Deposit} - {AccountDeposit}");
 
             AccountType result = (AccountType)GetNumber(numberAccountTypes);
             return result;
@@ -140,11 +149,11 @@ namespace BankGame
             {
                 if (accounts[i - 1] is CreditAccount)
                 {
-                    Console.WriteLine($"{i}. {accounts[i - 1].NameAccount} - кредитный счет");
+                    Console.WriteLine($"{i}. {accounts[i - 1].NameAccount} - {AccountCredit}");
                 }
                 else
                 {
-                    Console.WriteLine($"{i}. {accounts[i - 1].NameAccount} - депозитный счет");
+                    Console.WriteLine($"{i}. {accounts[i - 1].NameAccount} - {AccountDeposit}");
                 }
             }
 
@@ -176,21 +185,14 @@ namespace BankGame
             return money;
         }
 
-        public static T ShowCards<T>(List<T> cards, bool isOperation)
+        public static Card ShowCards(List<Card> cards, bool isOperation)
         {
             Console.Clear();
             int numberCard = 1;
 
-            foreach (T card in cards)
+            foreach (Card card in cards)
             {
-                if (typeof(T) == typeof(CreditCard))
-                {
-                    Console.WriteLine($"{numberCard}. Кредитная карта - {(card as CreditCard).Name}");
-                }
-                else
-                {
-                    Console.WriteLine($"{numberCard}. Депозитная карта - {(card as DepositCard).Name}");
-                }
+                Console.WriteLine($"Карта {card.Name}");
                 numberCard++;
             }
 
@@ -220,10 +222,10 @@ namespace BankGame
             Console.ReadKey();
         }
 
-        public static void InputDebt(CreditCard creditCard)
+        public static void InputDebt(Credit credit)
         {
             Console.Clear();
-            Console.WriteLine($"Задолжность на карте {creditCard.Name} равна {creditCard.AmountdDebt}");
+            Console.WriteLine($"Задолжность по кредиту {credit.CreditNumber} равна {credit.AmountdDebt}");
             Console.ReadKey();
         }
 
@@ -237,7 +239,7 @@ namespace BankGame
         public static void ErrorOperation()
         {
             Console.Clear();
-            Console.WriteLine(errorOperation);
+            Console.WriteLine(notWorkOperation);
             Console.ReadKey();
         }
 
@@ -256,53 +258,6 @@ namespace BankGame
             Console.Write("Введите номер счета (20 символов состоящих из английских букв и цифр): ");
             string nameAccount = Console.ReadLine();
             return nameAccount;
-        }
-
-        public static Account ShowListAccounts(List<Account> accounts, bool isOperation)
-        {
-            Console.Clear();
-            int numberAccount = 1;
-
-            foreach (Account account in accounts)
-            {
-                if (account is CreditAccount)
-                {
-                    Console.WriteLine($"{numberAccount}. {account.NameAccount} - кредитный счет, на этом счету {account.Money} денег. Карт на счету - {account.GetNumberCards()}");
-                }
-                else
-                {
-                    Console.WriteLine($"{numberAccount}. {account.NameAccount} - депозитный счет, на этом счету {account.Money} денег. Карт на счету - {account.GetNumberCards()}");
-                }
-                numberAccount++;
-            }
-
-            if (isOperation)
-            {
-                int numberAccountResult = GetNumber(accounts.Count) - 1;
-                return accounts[numberAccountResult];
-            }
-            else
-            {
-                Console.ReadKey();
-                return null;
-            }
-        }
-
-        public static void ShowNameCard(string name, CardType cardType)
-        {
-            Console.Clear();
-
-            switch (cardType)
-            {
-                case CardType.Credit:
-                    Console.WriteLine($"Кредитная карта - {name}");
-                    break;
-                case CardType.Deposit:
-                    Console.WriteLine($"Депозитная карта - {name}");
-                    break;
-            }
-
-            Console.ReadKey();
         }
     }
 }

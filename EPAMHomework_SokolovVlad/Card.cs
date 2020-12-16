@@ -2,7 +2,7 @@
 
 namespace BankGame
 {
-    public abstract class Card
+    public class Card
     {
         private const int lengthName = 16;
 
@@ -29,9 +29,10 @@ namespace BankGame
             return randomWord;
         }
 
-        public virtual bool TransferToCard(Account account, Account transferableAccount, int amountMoney)
+        public bool IsCardTransferToCard(Account account, Account transferableAccount, int amountMoney)
         {
-            if (account.WithdrawMoneyFromAccount(amountMoney))
+
+            if (account.AreMoneyWithdrawFromAccount(amountMoney))
             {
                 transferableAccount.PutMoneyToAccount(amountMoney);
                 return true;

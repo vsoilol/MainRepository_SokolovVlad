@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace BankGame
@@ -10,17 +11,26 @@ namespace BankGame
 
         private readonly Random randomValue;
 
-        public string NameAccount { get; set; }
-        public double Money { get; set; }
+        public string NameAccount { get; private set; }
+        public double Money { get; protected set; }
+
+        public List<Card> Cards { get; private set; }
 
         public Account()
         {
+            Cards = new List<Card>();
+
             randomValue = new Random();
 
             Money = 0;
 
             GenerateName();
             ConsoleProvider.ShowNameAccount(NameAccount);
+        }
+
+        public void AddCardToAccount()
+        {
+            Cards.Add(new Card());
         }
 
         public void GenerateName()
@@ -40,9 +50,9 @@ namespace BankGame
             Money += amountMoney;
         }
 
-        public bool WithdrawMoneyFromAccount(double amountMoney)
+        public bool AreMoneyWithdrawFromAccount(double amountMoney)
         {
-            if ((Money - amountMoney) < 0)
+            if (Money < amountMoney)
             {
                 return false;
             }
@@ -55,11 +65,5 @@ namespace BankGame
         {
             return Money < 0 ? true : false;
         }
-
-        public abstract void AddCardToAccount();
-
-        public abstract bool AnyCardsInAccount();
-
-        public abstract int GetNumberCards();
     }
 }
