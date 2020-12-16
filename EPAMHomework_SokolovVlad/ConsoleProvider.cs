@@ -168,18 +168,10 @@ namespace BankGame
             return numberMonthsCredit;
         }
 
-        public static int SetMoney(CardType cardType)
+        public static int SetCredit()
         {
             Console.Clear();
-            switch (cardType)
-            {
-                case CardType.Credit:
-                    Console.Write("Введите сумму кредита: ");
-                    break;
-                case CardType.Deposit:
-                    Console.Write("Введите сумму депозита: ");
-                    break;
-            }
+            Console.Write("Введите сумму кредита: ");
 
             int money = GetNumber();
             return money;

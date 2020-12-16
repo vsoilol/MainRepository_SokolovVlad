@@ -14,7 +14,7 @@ namespace BankGame
 
         public void AddCreditToAccount()
         {
-            int creditAmount = ConsoleProvider.SetMoney(CardType.Credit);
+            int creditAmount = ConsoleProvider.SetCredit();
             int numberMonthsCredit = ConsoleProvider.SetNumberMonthsCredit();
 
             Credits.Add(new Credit(creditAmount, numberMonthsCredit));
