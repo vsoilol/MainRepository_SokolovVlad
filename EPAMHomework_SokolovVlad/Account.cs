@@ -45,11 +45,6 @@ namespace BankGame
             NameAccount = resultStringBuilder.ToString();
         }
 
-        public void PutMoneyToAccount(double amountMoney)
-        {
-            Money += amountMoney;
-        }
-
         public bool AreMoneyWithdrawFromAccount(double amountMoney)
         {
             if (Money < amountMoney)
@@ -64,6 +59,84 @@ namespace BankGame
         public bool IsMoneyLessZero()
         {
             return Money < 0 ? true : false;
+        }
+
+        public void ShowAccount(int numberAccount)
+        {
+            if (this is CreditAccount)
+            {
+                Console.WriteLine($"{numberAccount}. {NameAccount} - {ConsoleProvider.AccountCredit}, на этом счету {Money} денег. {ConsoleProvider.CardsOnAccount} - {Cards.Count}");
+            }
+            else
+            {
+                Console.WriteLine($"{numberAccount}. {NameAccount} - {ConsoleProvider.AccountDeposit}, на этом счету {Money} денег. {ConsoleProvider.CardsOnAccount} - {Cards.Count}");
+            }
+        }
+
+        public void CheckAccount()
+        {
+            if (this is CreditAccount)
+            {
+                foreach (Credit credit in (this as CreditAccount).Credits)
+                {
+                    credit.AddDebt();
+                }
+            }
+            else
+            {
+                (this as DepositAccount).AddPercent();
+            }
+        }
+
+        public void WithdrawMoneyFromAccount()
+        {
+            int moneyFromAccount = ConsoleProvider.EnterMoney(ConsoleProvider.WithdrawMoneyFromSelectedAccount);
+
+            if (!AreMoneyWithdrawFromAccount(moneyFromAccount))
+            {
+                ConsoleProvider.ErrorOperation();
+            }
+        }
+
+        public void PutMoneyToAccount()
+        {
+            int moneyToAccount = ConsoleProvider.EnterMoney(ConsoleProvider.EnterMoneyToAccount);
+
+            Money += moneyToAccount;
+        }
+
+        public bool AreAccountHaveCards()
+        {
+            return (Cards.Count != 0 ? true : false);
+        }
+
+        public void AddCreditToAccount()
+        {
+            if (this is DepositAccount)
+            {
+                ConsoleProvider.ErrorOperation();
+            }
+            else
+            {
+                int creditAmount = ConsoleProvider.SetCredit();
+                int numberMonthsCredit = ConsoleProvider.SetNumberMonthsCredit();
+
+                (this as CreditAccount).Credits.Add(new Credit(creditAmount, numberMonthsCredit));
+
+                Money += creditAmount;
+            }
+        }
+
+        public bool IsCardTransferToCard(Account transferableAccount, int amountMoney)
+        {
+
+            if (AreMoneyWithdrawFromAccount(amountMoney))
+            {
+                transferableAccount.Money += amountMoney;
+                return true;
+            }
+
+            return false;
         }
     }
 }

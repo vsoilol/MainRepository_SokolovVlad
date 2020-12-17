@@ -28,17 +28,5 @@ namespace BankGame
 
             return randomWord;
         }
-
-        public bool IsCardTransferToCard(Account account, Account transferableAccount, int amountMoney)
-        {
-
-            if (account.AreMoneyWithdrawFromAccount(amountMoney))
-            {
-                transferableAccount.PutMoneyToAccount(amountMoney);
-                return true;
-            }
-
-            return false;
-        }
     }
 }

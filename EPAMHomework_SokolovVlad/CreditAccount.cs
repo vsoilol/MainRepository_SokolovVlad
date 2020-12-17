@@ -12,16 +12,6 @@ namespace BankGame
             Credits = new List<Credit>();
         }
 
-        public void AddCreditToAccount()
-        {
-            int creditAmount = ConsoleProvider.SetCredit();
-            int numberMonthsCredit = ConsoleProvider.SetNumberMonthsCredit();
-
-            Credits.Add(new Credit(creditAmount, numberMonthsCredit));
-
-            Money += creditAmount;
-        }
-
         public bool IsDebtRepay(Credit credit)
         {
             if (AreMoneyWithdrawFromAccount(credit.AmountdDebt))
@@ -78,6 +68,36 @@ namespace BankGame
             {
                 int numberCreditResult = ConsoleProvider.GetNumber(Credits.Count) - 1;
                 return Credits[numberCreditResult];
+            }
+        }
+
+        public void RepayDebt(bool isOperation)
+        {
+            Credit credit = ShowCredits(true);
+
+            if(credit != null)
+            {
+                ConsoleProvider.InputDebt(credit);
+
+                if (isOperation)
+                {
+                    if (IsMoneyLessZero())
+                    {
+                        ConsoleProvider.ErrorOperation();
+                    }
+                    else
+                    {
+                        if (!IsDebtRepay(credit))
+                        {
+                            ConsoleProvider.ErrorOperation();
+                        }
+                    }
+
+                    if (credit.IsDeptRepay())
+                    {
+                        DeleteCreditFromAccount(credit);
+                    }
+                }
             }
         }
     }
