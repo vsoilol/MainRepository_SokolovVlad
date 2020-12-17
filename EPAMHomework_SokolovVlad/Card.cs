@@ -4,7 +4,7 @@ namespace BankGame
 {
     public class Card
     {
-        private const int lengthName = 16;
+        private const int LengthName = 16;
 
         private readonly Random randomNumber;
 
@@ -21,7 +21,7 @@ namespace BankGame
         {
             string randomWord = "";
 
-            for (int i = 0; i < lengthName; i++)
+            for (int i = 0; i < LengthName; i++)
             {
                 randomWord += randomNumber.Next(1, 9);
             }

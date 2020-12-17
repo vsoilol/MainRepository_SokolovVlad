@@ -4,11 +4,11 @@ namespace BankGame
 {
     public class DepositAccount : Account
     {
-        private const int percentDeposit = 5;
+        private const int PercentDeposit = 5;
 
         public void AddPercent()
         {
-            double monthlyPercent = (Money * percentDeposit) / 100D;
+            double monthlyPercent = (Money * PercentDeposit) / 100D;
             Money += monthlyPercent;
         }
     }

@@ -4,8 +4,8 @@ namespace BankGame
 {
     public class Credit
     {
-        private const int percentCredit = 20;
-        private const int creditNumberLength = 4;
+        private const int PercentCredit = 20;
+        private const int CreditNumberLength = 4;
 
         private readonly double monthlyDebt;
 
@@ -25,7 +25,7 @@ namespace BankGame
 
             this.numberMonthsCredit = numberMonthsCredit;
 
-            monthlyDebt = (percentCredit / 100D) * (creditAmount / numberMonthsCredit) + (creditAmount / numberMonthsCredit);
+            monthlyDebt = (PercentCredit / 100D) * (creditAmount / numberMonthsCredit) + (creditAmount / numberMonthsCredit);
             AmountdDebt = 0;
 
             AddDebt();
@@ -35,7 +35,7 @@ namespace BankGame
         {
             CreditNumber = "";
 
-            for (int i = 0; i < creditNumberLength; i++)
+            for (int i = 0; i < CreditNumberLength; i++)
             {
                 CreditNumber += randomNumber.Next(1, 9);
             }

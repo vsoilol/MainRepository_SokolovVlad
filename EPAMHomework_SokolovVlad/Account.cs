@@ -6,8 +6,8 @@ namespace BankGame
 {
     public abstract class Account
     {
-        private const int maxNameLength = 20;
-        private const string dictionaryString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        private const int MaxNameLength = 20;
+        private const string DictionaryString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
         private readonly Random randomValue;
 
@@ -37,9 +37,9 @@ namespace BankGame
         {
             StringBuilder resultStringBuilder = new StringBuilder();
 
-            for (int i = 1; i <= maxNameLength; i++)
+            for (int i = 1; i <= MaxNameLength; i++)
             {
-                resultStringBuilder.Append(dictionaryString[randomValue.Next(dictionaryString.Length)]);
+                resultStringBuilder.Append(DictionaryString[randomValue.Next(DictionaryString.Length)]);
             }
 
             NameAccount = resultStringBuilder.ToString();
