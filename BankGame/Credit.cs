@@ -4,7 +4,6 @@ namespace BankGame
 {
     public class Credit
     {
-        private const int PercentCredit = 20;
         private const int CreditNumberLength = 4;
 
         private readonly double monthlyDebt;
@@ -18,14 +17,14 @@ namespace BankGame
 
         public string CreditNumber { get; private set; }
 
-        public Credit(int creditAmount, int numberMonthsCredit)
+        public Credit(int creditAmount, int numberMonthsCredit, int percentCredit)
         {
             randomNumber = new Random();
             CreateCreditNumber();
 
             this.numberMonthsCredit = numberMonthsCredit;
 
-            monthlyDebt = (PercentCredit / 100D) * (creditAmount / numberMonthsCredit) + (creditAmount / numberMonthsCredit);
+            monthlyDebt = (percentCredit / 100D) * (creditAmount / numberMonthsCredit) + (creditAmount / numberMonthsCredit);
             AmountdDebt = 0;
 
             AddDebt();

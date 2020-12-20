@@ -37,17 +37,14 @@ namespace BankGame
             while (true)
             {
                 ConsoleProvider.GreetCustomer(NameBank);
+
                 if (accounts.Count == 0)
                 {
                     ChooseOperation(OperationType.OnlyCreateAccount);
                 }
-                else if (!AreAccountsHaveCards())
-                {
-                    ChooseOperation(OperationType.CreateAccountWithAddCards);
-                }
                 else
                 {
-                    ChooseOperation(OperationType.AllOperation);
+                    ChooseOperation(OperationType.AllBankOperation);
                 }
             }
         }
@@ -58,104 +55,24 @@ namespace BankGame
 
             switch (numberOperation)
             {
-                case (int)OperationNumber.CreateAccount:
+                case (int)BankOperationNumber.CreateAccount:
                     AddAccount();
                     break;
-                case (int)OperationNumber.AddCard:
-                    AddCardToAccount();
+                case (int)BankOperationNumber.ChooseOperationAccounts:
+                    ChooseAccount(true).ChooseOperation();
                     break;
-                case (int)OperationNumber.PutMoneyToAccount:
-                    PutMoneyToAccount();
+                case (int)BankOperationNumber.TransferMoneyToCard:
+                    TransferMoneyToCard();
                     break;
-                case (int)OperationNumber.TransferCardToAnotherCard:
-                    TransferFromAccountToCard();
+                case (int)BankOperationNumber.TransferMoneyToAccount:
+                    TransferMoneyToAccount();
                     break;
-                case (int)OperationNumber.WithdrawMoneyFromAccount:
-                    WithdrawMoneyFromAccount();
-                    break;
-                case (int)OperationNumber.TransferMoneyToAccount:
-                    TransferAccountToAccount();
-                    break;
-                case (int)OperationNumber.WatchDebtOnCard:
-                    RepayDebt(false);
-                    break;
-                case (int)OperationNumber.RepayDebtFromCard:
-                    RepayDebt(true);
-                    break;
-                case (int)OperationNumber.ShowListAccounts:
+                case (int)BankOperationNumber.ShowListAccounts:
                     ChooseAccount(false);
                     break;
-                case (int)OperationNumber.AddCreditToAccount:
-                    AddCreditToAccount();
-                    break;
-                case (int)OperationNumber.PassMonth:
+                case (int)BankOperationNumber.PassMonth:
                     PassMonth();
                     break;
-            }
-        }
-
-        public void AddCreditToAccount()
-        {
-            Account account = ChooseAccount(true);
-
-            account.AddCreditToAccount();
-        }
-
-        public bool AreAccountsHaveCards()
-        {
-            foreach (Account account in accounts)
-            {
-                if (account.AreAccountHaveCards())
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public void AddCardToAccount()
-        {
-            int numberAccount = ConsoleProvider.ChooseAccount(accounts);
-            accounts[numberAccount].AddCardToAccount();
-        }
-
-        public void PutMoneyToAccount()
-        {
-            Account account = ChooseAccount(true);
-
-            account.PutMoneyToAccount();
-        }
-
-        public void WithdrawMoneyFromAccount()
-        {
-            Account account = ChooseAccount(true);
-
-            account.WithdrawMoneyFromAccount();
-        }
-
-        public void RepayDebt(bool isOperation)
-        {
-            Account account;
-
-            while (true)
-            {
-                account = ChooseAccount(true);
-
-                if (account == null)
-                {
-                    return;
-                }
-
-                if (account is DepositAccount)
-                {
-                    ConsoleProvider.NotCreditAccount();
-                }
-                else
-                {
-                    (account as CreditAccount).RepayDebt(isOperation);
-                    break;
-                }
             }
         }
 
@@ -167,13 +84,19 @@ namespace BankGame
             }
         }
 
-        public void TransferFromAccountToCard()
+        public void TransferMoneyToCard()
         {
-            ConsoleProvider.ChooseCard(ConsoleProvider.ChooseAccountTransferToAccount);
+            ConsoleProvider.ChooseAccount(ConsoleProvider.ChooseTransferToAccount);
             Account account = ChooseAccount(true);
 
-            ConsoleProvider.ChooseCard(ConsoleProvider.ChoosePutToAccountMoney);
+            ConsoleProvider.ChooseAccount(ConsoleProvider.ChoosePutToAccountMoney);
             Account transferableAccount = ChooseAccount(true);
+
+            if (account == transferableAccount)
+            {
+                ConsoleProvider.ErrorOperation();
+                return;
+            }
 
             int transferableMoney = ConsoleProvider.EnterMoney(ConsoleProvider.EnterTransferableAmount);
 
@@ -200,9 +123,9 @@ namespace BankGame
             }
         }
 
-        public void TransferAccountToAccount()
+        public void TransferMoneyToAccount()
         {
-            ConsoleProvider.ChooseCard(ConsoleProvider.ChooseAccountTransferToAccount);
+            ConsoleProvider.ChooseAccount(ConsoleProvider.ChooseTransferToAccount);
             Account account = ChooseAccount(true);
 
             string nameAccount;

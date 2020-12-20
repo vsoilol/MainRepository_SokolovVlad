@@ -3,7 +3,8 @@
     public enum OperationType
     {
         OnlyCreateAccount = 1,
-        CreateAccountWithAddCards = 2,
-        AllOperation = 11,
+        AccountsOperation = 3,
+        AllBankOperation = 6,
+        CreditAccountsOperation = 8,
     }
 }

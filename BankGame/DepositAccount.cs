@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace BankGame
+﻿namespace BankGame
 {
     public class DepositAccount : Account
     {

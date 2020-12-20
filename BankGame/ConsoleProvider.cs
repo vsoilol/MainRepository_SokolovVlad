@@ -11,9 +11,11 @@ namespace BankGame
         private const string TryAgain = "Повторите снова.";
 
         private const string CreateAccount = "Создать счет";
+        private const string ChooseOperationAccounts = "Выбрать опреации со счетами";
+
         private const string AddCard = "Добавить карту";
         private const string PutMoneyToAccount = "Положить деньги на счет";
-        private const string TransferCardToAnotherCard = "Перевести с карты на карту";
+        private const string TransferMoneyToCard = "Перевести с карты на карту";
         private const string WithdrawMoneyFromAccount = "Снять деньги со счета";
         private const string TransferMoneyToAccount = "Перевести деньги на счет";
         private const string WatchDebtOnCard = "Посмотреть задолжность";
@@ -32,12 +34,9 @@ namespace BankGame
         public const string AccountCredit = "кредитный счет";
         public const string AccountDeposit = "депозитный счет";
 
-        public const string CardCredit = "Кредитная карта";
-        public const string CardDeposit = "Депозитная карта";
-
         public const string WithdrawMoneyFromSelectedAccount = "Введите сумму которую хотите снять со счета: ";
         public const string EnterMoneyToAccount = "Введите сумму которую хотите положить на счёт: ";
-        public const string ChooseAccountTransferToAccount = "Выберете счет с которой будет производится перевод.";
+        public const string ChooseTransferToAccount = "Выберете счет с которой будет производится перевод.";
         public const string ChoosePutToAccountMoney = "Выберете счет на который будет сделан перевод.";
         public const string EnterTransferableAmount = "Введите сумму для перевода: ";
 
@@ -51,32 +50,45 @@ namespace BankGame
             switch (operationType)
             {
                 case OperationType.OnlyCreateAccount:
-                    Console.WriteLine($"{(int)OperationNumber.CreateAccount}. {CreateAccount}");
+                    Console.WriteLine($"{(int)BankOperationNumber.CreateAccount}. {CreateAccount}");
                     result = GetNumber((int)OperationType.OnlyCreateAccount);
                     break;
 
-                case OperationType.CreateAccountWithAddCards:
-                    Console.WriteLine($"{(int)OperationNumber.CreateAccount}. {CreateAccount}");
-                    Console.WriteLine($"{(int)OperationNumber.AddCard}. {AddCard}");
-                    result = GetNumber((int)OperationType.CreateAccountWithAddCards);
+                case OperationType.AccountsOperation:
+                    Console.Clear();
+
+                    Console.WriteLine($"{(int)AccountsOperationNumber.AddCard}. {AddCard}");
+                    Console.WriteLine($"{(int)AccountsOperationNumber.PutMoneyToAccount}. {PutMoneyToAccount}");
+                    Console.WriteLine($"{(int)AccountsOperationNumber.WithdrawMoneyFromAccount}. {WithdrawMoneyFromAccount}");
+
+                    result = GetNumber((int)OperationType.AccountsOperation);
                     break;
 
-                case OperationType.AllOperation:
-                    Console.WriteLine($"{(int)OperationNumber.CreateAccount}. {CreateAccount}");
-                    Console.WriteLine($"{(int)OperationNumber.AddCard}. {AddCard}");
-                    Console.WriteLine($"{(int)OperationNumber.PutMoneyToAccount}. {PutMoneyToAccount}");
-                    Console.WriteLine($"{(int)OperationNumber.TransferCardToAnotherCard}. {TransferCardToAnotherCard}");
-                    Console.WriteLine($"{(int)OperationNumber.WithdrawMoneyFromAccount}. {WithdrawMoneyFromAccount}");
-                    Console.WriteLine($"{(int)OperationNumber.TransferMoneyToAccount}. {TransferMoneyToAccount}");
-                    Console.WriteLine($"{(int)OperationNumber.WatchDebtOnCard}. {WatchDebtOnCard}");
-                    Console.WriteLine($"{(int)OperationNumber.RepayDebtFromCard}. {RepayDebtFromCard}");
-                    Console.WriteLine($"{(int)OperationNumber.ShowListAccounts}. {ShowListAccounts}");
-                    Console.WriteLine($"{(int)OperationNumber.AddCreditToAccount}. {AddCreditToAccount}");
-                    Console.WriteLine($"{(int)OperationNumber.PassMonth}. {PassMonth}");
+                case OperationType.AllBankOperation:
+                    Console.WriteLine($"{(int)BankOperationNumber.CreateAccount}. {CreateAccount}");
+                    Console.WriteLine($"{(int)BankOperationNumber.ChooseOperationAccounts}. {ChooseOperationAccounts}");
+                    Console.WriteLine($"{(int)BankOperationNumber.TransferMoneyToCard}. {TransferMoneyToCard}");
+                    Console.WriteLine($"{(int)BankOperationNumber.TransferMoneyToAccount}. {TransferMoneyToAccount}");
+                    Console.WriteLine($"{(int)BankOperationNumber.ShowListAccounts}. {ShowListAccounts}");
+                    Console.WriteLine($"{(int)BankOperationNumber.PassMonth}. {PassMonth}");
 
-                    result = GetNumber((int)OperationType.AllOperation);
+                    result = GetNumber((int)OperationType.AllBankOperation);
+                    break;
+
+                case OperationType.CreditAccountsOperation:
+                    Console.Clear();
+
+                    Console.WriteLine($"{(int)AccountsOperationNumber.AddCard}. {AddCard}");
+                    Console.WriteLine($"{(int)AccountsOperationNumber.PutMoneyToAccount}. {PutMoneyToAccount}");
+                    Console.WriteLine($"{(int)AccountsOperationNumber.WithdrawMoneyFromAccount}. {WithdrawMoneyFromAccount}");
+                    Console.WriteLine($"{(int)AccountsOperationNumber.WatchDebtOnCard}. {WatchDebtOnCard}");
+                    Console.WriteLine($"{(int)AccountsOperationNumber.RepayDebtFromCard}. {RepayDebtFromCard}");
+                    Console.WriteLine($"{(int)AccountsOperationNumber.AddCreditToAccount}. {AddCreditToAccount}");
+
+                    result = GetNumber((int)OperationType.CreditAccountsOperation);
                     break;
             }
+
             return result;
         }
 
@@ -134,6 +146,13 @@ namespace BankGame
             Console.ReadKey();
         }
 
+        public static void ShowNameCard(string nameCard)
+        {
+            Console.Clear();
+            Console.WriteLine($"Номер карты {nameCard}");
+            Console.ReadKey();
+        }
+
         public static AccountType ChooseAccountType()
         {
             Console.Clear();
@@ -146,27 +165,6 @@ namespace BankGame
             return result;
         }
 
-        public static int ChooseAccount(List<Account> accounts)
-        {
-            Console.Clear();
-            Console.WriteLine("Выберете счет:");
-
-            for (int i = 1; i <= accounts.Count; i++)
-            {
-                if (accounts[i - 1] is CreditAccount)
-                {
-                    Console.WriteLine($"{i}. {accounts[i - 1].NameAccount} - {AccountCredit}");
-                }
-                else
-                {
-                    Console.WriteLine($"{i}. {accounts[i - 1].NameAccount} - {AccountDeposit}");
-                }
-            }
-
-            int numberAccount = GetNumber(accounts.Count);
-            return numberAccount - 1;
-        }
-
         public static int SetNumberMonthsCredit()
         {
             Console.Write("Введите количество месяцев: ");
@@ -176,48 +174,10 @@ namespace BankGame
 
         public static int SetCredit()
         {
-            Console.Clear();
             Console.Write("Введите сумму кредита: ");
 
             int money = GetNumber();
             return money;
-        }
-
-        public static Card ShowCards(List<Card> cards, bool isOperation)
-        {
-            Console.Clear();
-            int numberCard = 1;
-
-            foreach (Card card in cards)
-            {
-                Console.WriteLine($"Карта {card.Name}");
-                numberCard++;
-            }
-
-            if (numberCard == 1)
-            {
-                Console.WriteLine("Нет карт");
-                Console.ReadKey();
-                return default;
-            }
-
-            if (!isOperation)
-            {
-                Console.ReadKey();
-                return default;
-            }
-            else
-            {
-                int numberCardResult = GetNumber(cards.Count) - 1;
-                return cards[numberCardResult];
-            }
-        }
-
-        public static void NotCreditAccount()
-        {
-            Console.Clear();
-            Console.WriteLine("Этот счет не кредитный.\n" + TryAgain);
-            Console.ReadKey();
         }
 
         public static void InputDebt(Credit credit)
@@ -227,7 +187,7 @@ namespace BankGame
             Console.ReadKey();
         }
 
-        public static void ChooseCard(string text)
+        public static void ChooseAccount(string text)
         {
             Console.Clear();
             Console.WriteLine(text);

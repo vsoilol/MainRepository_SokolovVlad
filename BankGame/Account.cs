@@ -110,22 +110,7 @@ namespace BankGame
             return (Cards.Count != 0 ? true : false);
         }
 
-        public void AddCreditToAccount()
-        {
-            if (this is DepositAccount)
-            {
-                ConsoleProvider.ErrorOperation();
-            }
-            else
-            {
-                int creditAmount = ConsoleProvider.SetCredit();
-                int numberMonthsCredit = ConsoleProvider.SetNumberMonthsCredit();
 
-                (this as CreditAccount).Credits.Add(new Credit(creditAmount, numberMonthsCredit));
-
-                Money += creditAmount;
-            }
-        }
 
         public bool IsCardTransferToCard(Account transferableAccount, int amountMoney)
         {
@@ -137,6 +122,24 @@ namespace BankGame
             }
 
             return false;
+        }
+
+        public virtual void ChooseOperation()
+        {
+            int numberOperation = ConsoleProvider.SelectOperation(OperationType.AccountsOperation);
+
+            switch (numberOperation)
+            {
+                case (int)AccountsOperationNumber.AddCard:
+                    AddCardToAccount();
+                    break;
+                case (int)AccountsOperationNumber.PutMoneyToAccount:
+                    PutMoneyToAccount();
+                    break;
+                case (int)AccountsOperationNumber.WithdrawMoneyFromAccount:
+                    WithdrawMoneyFromAccount();
+                    break;
+            }
         }
     }
 }

@@ -15,6 +15,7 @@ namespace BankGame
             randomNumber = new Random();
 
             Name = GenerateName();
+            ConsoleProvider.ShowNameCard(Name);
         }
 
         public string GenerateName()
