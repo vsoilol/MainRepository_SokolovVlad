@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace BankGame
 {
@@ -110,11 +111,8 @@ namespace BankGame
             return (Cards.Count != 0 ? true : false);
         }
 
-
-
         public bool IsCardTransferToCard(Account transferableAccount, int amountMoney)
         {
-
             if (AreMoneyWithdrawFromAccount(amountMoney))
             {
                 transferableAccount.Money += amountMoney;
@@ -139,6 +137,42 @@ namespace BankGame
                 case (int)AccountsOperationNumber.WithdrawMoneyFromAccount:
                     WithdrawMoneyFromAccount();
                     break;
+            }
+        }
+
+        public virtual void TransferMoneyToAccount()
+        {
+            string nameAccount;
+
+            Regex nameAccountRegex = new Regex(@"^\w{20}$");
+
+            do
+            {
+                nameAccount = ConsoleProvider.EnterAccountName();
+            }
+            while (!nameAccountRegex.IsMatch(nameAccount));
+
+            int transferableMoney = ConsoleProvider.EnterMoney(ConsoleProvider.EnterTransferableAmount);
+
+            if (!AreMoneyWithdrawFromAccount(transferableMoney))
+            {
+                ConsoleProvider.ErrorOperation();
+            }
+        }
+
+        public virtual void TransferMoneyToCard(Account transferableAccount)
+        {
+            if (this == transferableAccount)
+            {
+                ConsoleProvider.ErrorOperation();
+                return;
+            }
+
+            int transferableMoney = ConsoleProvider.EnterMoney(ConsoleProvider.EnterTransferableAmount);
+
+            if (!IsCardTransferToCard(transferableAccount, transferableMoney))
+            {
+                ConsoleProvider.ErrorOperation();
             }
         }
     }

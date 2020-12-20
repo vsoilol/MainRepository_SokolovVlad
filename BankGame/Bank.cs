@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace BankGame
 {
@@ -62,10 +61,15 @@ namespace BankGame
                     ChooseAccount(true).ChooseOperation();
                     break;
                 case (int)BankOperationNumber.TransferMoneyToCard:
-                    TransferMoneyToCard();
+                    ConsoleProvider.ChooseAccount(ConsoleProvider.ChooseTransferToAccount);
+                    Account account = ChooseAccount(true);
+
+                    ConsoleProvider.ChooseAccount(ConsoleProvider.ChoosePutToAccountMoney);
+                    account.TransferMoneyToCard(ChooseAccount(true));
                     break;
                 case (int)BankOperationNumber.TransferMoneyToAccount:
-                    TransferMoneyToAccount();
+                    ConsoleProvider.ChooseAccount(ConsoleProvider.ChooseTransferToAccount);
+                    ChooseAccount(true).TransferMoneyToAccount();
                     break;
                 case (int)BankOperationNumber.ShowListAccounts:
                     ChooseAccount(false);
@@ -81,75 +85,6 @@ namespace BankGame
             foreach (Account account in accounts)
             {
                 account.CheckAccount();
-            }
-        }
-
-        public void TransferMoneyToCard()
-        {
-            ConsoleProvider.ChooseAccount(ConsoleProvider.ChooseTransferToAccount);
-            Account account = ChooseAccount(true);
-
-            ConsoleProvider.ChooseAccount(ConsoleProvider.ChoosePutToAccountMoney);
-            Account transferableAccount = ChooseAccount(true);
-
-            if (account == transferableAccount)
-            {
-                ConsoleProvider.ErrorOperation();
-                return;
-            }
-
-            int transferableMoney = ConsoleProvider.EnterMoney(ConsoleProvider.EnterTransferableAmount);
-
-            if (account is CreditAccount)
-            {
-                if ((account as CreditAccount).IsMonthlyDeptRepay())
-                {
-                    if ((transferableAccount is DepositAccount) || account.IsMoneyLessZero() || !account.IsCardTransferToCard(transferableAccount, transferableMoney))
-                    {
-                        ConsoleProvider.ErrorOperation();
-                    }
-                }
-                else
-                {
-                    ConsoleProvider.ErrorOperation();
-                }
-            }
-            else
-            {
-                if (!account.IsCardTransferToCard(transferableAccount, transferableMoney))
-                {
-                    ConsoleProvider.ErrorOperation();
-                }
-            }
-        }
-
-        public void TransferMoneyToAccount()
-        {
-            ConsoleProvider.ChooseAccount(ConsoleProvider.ChooseTransferToAccount);
-            Account account = ChooseAccount(true);
-
-            string nameAccount;
-
-            Regex nameAccountRegex = new Regex(@"^\w{20}$");
-
-            do
-            {
-                nameAccount = ConsoleProvider.EnterAccountName();
-            }
-            while (!nameAccountRegex.IsMatch(nameAccount));
-
-            int transferableMoney = ConsoleProvider.EnterMoney(ConsoleProvider.EnterTransferableAmount);
-
-            if ((account is CreditAccount) && !(account as CreditAccount).IsMonthlyDeptRepay())
-            {
-                ConsoleProvider.ErrorOperation();
-            }
-            else
-            {
-                if (!account.AreMoneyWithdrawFromAccount(transferableMoney))
-                {
-                    ConsoleProvider.ErrorOperation();
-                }
             }
         }
 

@@ -142,5 +142,29 @@ namespace BankGame
                     break;
             }
         }
+
+        public override void TransferMoneyToAccount()
+        {
+            if (!IsMonthlyDeptRepay())
+            {
+                ConsoleProvider.ErrorOperation();
+            }
+            else
+            {
+                base.TransferMoneyToAccount();
+            }
+        }
+
+        public override void TransferMoneyToCard(Account transferableAccount)
+        {
+            if ((transferableAccount is DepositAccount) || IsMoneyLessZero() || !IsMonthlyDeptRepay())
+            {
+                ConsoleProvider.ErrorOperation();
+            }
+            else
+            {
+                base.TransferMoneyToCard(transferableAccount);
+            }
+        }
     }
 }
