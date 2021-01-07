@@ -22,6 +22,8 @@ namespace BombGame
         private const int TimePosition = 0;
 
         private const int PasswordPosition = 3;
+        private const int MistakePasswordPosition = 3;
+        private const int AttemptsPosition = 2;
 
         public static int CreateMenu()
         {
@@ -75,7 +77,7 @@ namespace BombGame
         public static void ShowAttempts(int attempts)
         {
             Console.ResetColor();
-            Console.SetCursorPosition(0, 2);
+            Console.SetCursorPosition(0, AttemptsPosition);
             Console.WriteLine($"Количество неверных вариантов {attempts}");
         }
 
@@ -91,7 +93,7 @@ namespace BombGame
         public static void MistakePassword()
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.SetCursorPosition(0, 3);
+            Console.SetCursorPosition(0, MistakePasswordPosition);
             Console.WriteLine("Неправильный пароль");
         }
 

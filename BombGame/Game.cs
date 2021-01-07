@@ -13,6 +13,7 @@ namespace BombGame
         private const int MaxValuePassowrd = 10;
 
         private const int PasswordLength = 4;
+        private const int GuessPasswordPosition = 1;
 
         private readonly int[] Password;
         private int[] guessedPassword;
@@ -139,38 +140,11 @@ namespace BombGame
 
             while (inGame)
             {
-                Console.SetCursorPosition(0, 1);
+                Console.SetCursorPosition(0, GuessPasswordPosition);
                 Console.Write(ConsoleProvider.DivinePassword);
 
-                for (int i = 0; i < guessedPassword.Length; i++)
-                {
-                    while (inGame)
-                    {
-                        if (int.TryParse(Console.ReadKey(true).KeyChar.ToString(), out guessedPassword[i]))
-                        {
-                            Console.SetCursorPosition(passwordPosition, 1);
-                            Console.Write(guessedPassword[i]);
-                            passwordPosition++;
-                            break;
-                        }
-                        else
-                        {
-                            ConsoleProvider.ShowPassword(Password);
-                        }
-                    }
-                }
-
-                while (inGame)
-                {
-                    if (Console.ReadKey(true).Key == ConsoleKey.Enter)
-                    {
-                        ConsoleProvider.DeleteLine(1, ConsoleProvider.DivinePassword.Length);
-                        passwordPosition = ConsoleProvider.DivinePassword.Length;
-
-                        CheckPasswordAsync();
-                        break;
-                    }
-                }
+                EnterPassword(passwordPosition);
+                ConfirmPassword(ref passwordPosition);
             }
         }
 
@@ -193,6 +167,42 @@ namespace BombGame
         {
             mainTimer.Dispose();
             inGame = false;
+        }
+
+        private void EnterPassword(int passwordPosition)
+        {
+            for (int i = 0; i < guessedPassword.Length; i++)
+            {
+                while (inGame)
+                {
+                    if (int.TryParse(Console.ReadKey(true).KeyChar.ToString(), out guessedPassword[i]))
+                    {
+                        Console.SetCursorPosition(passwordPosition, GuessPasswordPosition);
+                        Console.Write(guessedPassword[i]);
+                        passwordPosition++;
+                        break;
+                    }
+                    else
+                    {
+                        ConsoleProvider.ShowPassword(Password);
+                    }
+                }
+            }
+        }
+
+        private void ConfirmPassword(ref int passwordPosition)
+        {
+            while (inGame)
+            {
+                if (Console.ReadKey(true).Key == ConsoleKey.Enter)
+                {
+                    ConsoleProvider.DeleteLine(1, ConsoleProvider.DivinePassword.Length);
+                    passwordPosition = ConsoleProvider.DivinePassword.Length;
+
+                    CheckPasswordAsync();
+                    break;
+                }
+            }
         }
     }
 }
