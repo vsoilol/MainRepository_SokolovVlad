@@ -25,6 +25,8 @@ namespace BombGame
         private const int MistakePasswordPosition = 3;
         private const int AttemptsPosition = 2;
 
+        private const int MinValue = 1;
+
         public static int CreateMenu()
         {
             int result;
@@ -34,12 +36,12 @@ namespace BombGame
             Console.WriteLine($"{(int)Menu.ExitGame}. {ExitGame}");
             Console.WriteLine($"{(int)Menu.DeleteHallOfFame}. {DeleteHallOfFame}");
 
-            result = GetMenuNumber();
+            result = GetNumber(FirstNumberMenu, LastNumberMenu);
 
             return result;
         }
 
-        public static int GetMenuNumber()
+        public static int GetNumber(int minValue, int maxValue)
         {
             int resultNumber;
 
@@ -47,7 +49,35 @@ namespace BombGame
             {
                 if (int.TryParse(Console.ReadLine(), out resultNumber))
                 {
-                    if (resultNumber <= LastNumberMenu && resultNumber >= FirstNumberMenu)
+                    if (resultNumber <= maxValue && resultNumber >= minValue)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine(InvalidInput);
+                        Console.WriteLine(TryAgain);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine(NotNumber);
+                    Console.WriteLine(TryAgain);
+                }
+            }
+
+            return resultNumber;
+        }
+
+        public static int GetNumber(int minValue)
+        {
+            int resultNumber;
+
+            while (true)
+            {
+                if (int.TryParse(Console.ReadLine(), out resultNumber))
+                {
+                    if (resultNumber >= minValue)
                     {
                         break;
                     }
@@ -121,6 +151,17 @@ namespace BombGame
             Console.Clear();
             Console.WriteLine("Ты проиграл");
             Console.ReadKey();
+        }
+
+        public static void ChooseData(ref int gameTime, ref int maxNumberAttempts)
+        {
+            Console.Write("Введите время в минутах: ");
+            gameTime = GetNumber(MinValue);
+
+            Console.Write("Введите максимальное число попыток: ");
+            maxNumberAttempts = GetNumber(MinValue);
+
+            Console.Clear();
         }
     }
 }

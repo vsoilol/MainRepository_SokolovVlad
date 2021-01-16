@@ -1,6 +1,6 @@
 ﻿namespace BombGame
 {
-    public struct HallOfFameEntry
+    public class HallOfFameEntry
     {
         public string Name { get; set; }
         public int NumberAttempts { get; set; }

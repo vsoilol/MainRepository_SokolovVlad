@@ -7,7 +7,7 @@ namespace BombGame
     public class Game
     {
         private const int OneSecond = 1000;
-        private const int GameTime = 3; //Время таймера в минутах
+        private int gameTime; //Время таймера в минутах
 
         private const int MinValuePassword = 1;
         private const int MaxValuePassowrd = 10;
@@ -19,6 +19,7 @@ namespace BombGame
         private int[] guessedPassword;
 
         private int numberAttempts = 0; //количество попыток
+        private int maxNumberAttempts;
         private bool inGame = true;
 
         private readonly Random randomNumber;
@@ -50,6 +51,13 @@ namespace BombGame
                 {
                     numberAttempts++;
 
+                    if(numberAttempts >= maxNumberAttempts)
+                    {
+                        EndTime();
+                        ConsoleProvider.LostGame();
+                        return;
+                    }
+
                     ConsoleProvider.MistakePassword();
                     ConsoleProvider.ShowAttempts(numberAttempts);
 
@@ -67,10 +75,12 @@ namespace BombGame
             Console.CursorVisible = false;
             Console.Clear();
 
-            ConsoleProvider.ShowAttempts(numberAttempts);
+            ConsoleProvider.ChooseData(ref gameTime, ref maxNumberAttempts);
 
             inGame = true;
             numberAttempts = 0;
+
+            ConsoleProvider.ShowAttempts(numberAttempts);
 
             SetPassword();
             StartTimer();
@@ -80,7 +90,7 @@ namespace BombGame
         public void StartTimer()
         {
             remainingTime = new DateTime();
-            remainingTime = remainingTime.AddMinutes(GameTime);
+            remainingTime = remainingTime.AddMinutes(gameTime);
 
             TimerCallback outputTimeCB = new TimerCallback(ShowRemainingTime);
 
@@ -151,7 +161,7 @@ namespace BombGame
         private void WinGame()
         {
             EndTime();
-            TimeSpan guessTime = new TimeSpan(0, GameTime, 0) - remainingTime.TimeOfDay;
+            TimeSpan guessTime = new TimeSpan(0, gameTime, 0) - remainingTime.TimeOfDay;
 
             ConsoleProvider.ShowResult(numberAttempts, guessTime);
 
