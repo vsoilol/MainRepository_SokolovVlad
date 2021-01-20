@@ -4,46 +4,41 @@ using System.Threading.Tasks;
 
 namespace BombGame
 {
-    public class Game
+    public static class Game
     {
         private const int OneSecond = 1000;
-        private int gameTime; //Время таймера в минутах
-
+        private static int gameTime;
         private const int MinValuePassword = 1;
         private const int MaxValuePassowrd = 10;
 
         private const int PasswordLength = 4;
         private const int GuessPasswordPosition = 1;
 
-        private readonly int[] Password;
-        private int[] guessedPassword;
+        private static int[] Password;
+        private static int[] guessedPassword;
 
-        private int numberAttempts = 0; //количество попыток
-        private int maxNumberAttempts;
-        private bool inGame = true;
+        private static int numberAttempts = 0;
+        private static int maxNumberAttempts;
+        private static bool inGame = true;
 
-        private readonly Random randomNumber;
-        private Timer mainTimer;
+        private static Random randomNumber;
+        private static Timer mainTimer;
 
-        private DateTime remainingTime;
-        private HallOfFameEntry entry;
+        private static DateTime remainingTime;
+        private static HallOfFameEntry entry;
 
-        public Game()
+        private static void SetPassword()
         {
             randomNumber = new Random();
-
             Password = new int[PasswordLength];
-        }
 
-        private void SetPassword()
-        {
             for (int i = 0; i < PasswordLength; i++)
             {
                 Password[i] = randomNumber.Next(MinValuePassword, MaxValuePassowrd);
             }
         }
 
-        public async void CheckPasswordAsync()
+        public static async void CheckPasswordAsync()
         {
             for (int i = 0; i < PasswordLength; i++)
             {
@@ -70,7 +65,7 @@ namespace BombGame
             WinGame();
         }
 
-        public void StartGame()
+        public static void StartGame()
         {
             Console.CursorVisible = false;
             Console.Clear();
@@ -87,7 +82,7 @@ namespace BombGame
             GuessPassword();
         }
 
-        public void StartTimer()
+        public static void StartTimer()
         {
             remainingTime = new DateTime();
             remainingTime = remainingTime.AddMinutes(gameTime);
@@ -97,7 +92,7 @@ namespace BombGame
             mainTimer = new Timer(outputTimeCB, null, 0, OneSecond);
         }
 
-        public void ShowRemainingTime(object state)
+        public static void ShowRemainingTime(object state)
         {
             if (remainingTime <= DateTime.MinValue)
             {
@@ -112,7 +107,7 @@ namespace BombGame
             }
         }
 
-        public void RunMenu()
+        public static void RunMenu()
         {
             while (true)
             {
@@ -136,13 +131,13 @@ namespace BombGame
             }
         }
 
-        public void ShowHighscores()
+        public static void ShowHighscores()
         {
             HallOfFame.ShowHallOfFame();
             Console.ReadKey();
         }
 
-        public void GuessPassword()//Гадание пароля
+        public static void GuessPassword()//Гадание пароля
         {
             guessedPassword = new int[PasswordLength];
 
@@ -158,7 +153,7 @@ namespace BombGame
             }
         }
 
-        private void WinGame()
+        private static void WinGame()
         {
             EndTime();
             TimeSpan guessTime = new TimeSpan(0, gameTime, 0) - remainingTime.TimeOfDay;
@@ -173,13 +168,13 @@ namespace BombGame
             HallOfFame.AddResult(entry);
         }
 
-        public void EndTime()
+        public static void EndTime()
         {
             mainTimer.Dispose();
             inGame = false;
         }
 
-        private void EnterPassword(int passwordPosition)
+        private static void EnterPassword(int passwordPosition)
         {
             for (int i = 0; i < guessedPassword.Length; i++)
             {
@@ -200,7 +195,7 @@ namespace BombGame
             }
         }
 
-        private void ConfirmPassword(ref int passwordPosition)
+        private static void ConfirmPassword(ref int passwordPosition)
         {
             while (inGame)
             {
